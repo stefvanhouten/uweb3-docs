@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <h2>Configuartion</h2>
+
+        <div id="basic_config">
+          <h3>Basic configuartion µWeb3</h3>
+          <p>
+            Configuarting µWeb3 is as easy as changing some settings in a config file. Lets get started.
+            Navigate and open <code>project_folder/scaffold/base/config.ini</code>. 
+          </p>
+          <p>
+            All settings in this file are accessible in any µWeb3 pagemaker file, more about the pagemaker later, 
+            for now all we need to know that is that we should store our settings here.
+          </p>
+          <p>
+            A few default settings are:
+          </p>
+              <pre>
+                <code>
+                  [development]
+                  dev = True
+                </code>
+              </pre>
+            Setting the dev flag to True can be use for many things, 
+            one of those is that µWeb3 is now monitoring your files for changes and will restart accordingly.
+        </div>
+
+        <div id="database_config">
+          <h3>Database configuartion µWeb3</h3>
+          <p>
+            In the same config file as above we also setup our database configuration. 
+            With this information µWeb3 creates a connection object which is available depending on the pagemaker that you use.
+          </p>
+          <pre>
+            <code>
+              [mysql] OR [sqlite]
+              host = host
+              user = username
+              password = pass
+              database = dbname
+            </code>
+          </pre>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -9,3 +9,6 @@ class PageMaker(uweb3.DebuggingPageMaker):
 
   def GettingStarted(self):
     return self.parser.Parse('documentation/gettingStarted.html')
+
+  def Configuartion(self):
+    return self.parser.Parse('documentation/configuartion.html')

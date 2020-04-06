@@ -30,6 +30,7 @@ def main():
       ('/documentation', 'Documentation'),
       ('/documentation/installation', 'Installation'),
       ('/documentation/getting_started', 'GettingStarted'),
+      ('/documentation/configuartion', 'Configuartion'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
       ]
