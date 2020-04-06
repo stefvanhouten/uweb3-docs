@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <h2>Installation</h2>
+        <div id="virtualenv">
+          <h3>Setting up the virtual environment</h3>
+          <p>The easiest and quickest way to install µWeb3 is using Python's <code>virtualenv</code>.</p>
+          <p>Create a project folder and a virtual environment folder:</p>
+          <pre>
+            <code>
+              >>> mkdir project_folder
+              >>> cd project_folder
+
+              >>> virtualenv uweb3-venv
+              Activate the environment
+              >>> source uweb3-venv/bin/activate
+            </code>
+          </pre>
+        </div>
+        <div id="dependencies">
+          <h3>uWeb3 Dependencies</h3>
+          <p>uWeb3 makes use of the following packages:</p>
+          <ul>
+            <li>decorator</li>
+            <li>PyMySQL</li>
+            <li>python-magic</li>
+            <li>python3-openid</li>
+            <li>pytz</li>
+            <li>simplejson</li>
+            <li>sqlalchemy</li>
+            <li>werkzeug</li>
+            <li>mysqlclient</li>
+          </ul>
+        </div>
+        <div id="installation">
+          <h3>Installation</h3>
+          <p>µWeb3 can be installed with pip3.</p>
+          <pre>
+            <code>
+              >>> pip3 install uWeb3
+            </code>
+          </pre>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

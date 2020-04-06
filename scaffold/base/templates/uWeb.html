@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <section>
+      <div class="content">
+        <div class="column_full">
+          <h2>Welcome to µWeb</h2>
+          <p>µWeb (like, microWeb) is a small, easy to use python framework that (we hope) doesn't get in your way.</p>
+          <p>It helps you setup python based Websites, services and bring them to production easily and quickly.</p>
+          <p>Since we use a <a href="http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter">MVP</a> like approach, anyone who has used other microframeworks or django and want to do more, with less should find themselves right at home.</p>
+          <h2>Features</h2>
+          <p>Since µWeb isn't a multi-megabyte download its feature list isn't overly long, which allows you to do things the way you want. However we have included all of the stuff that we deem vital to quick Web-development with python.</p>
+          <ul>
+            <li>An easy to understand MVP like layout</li>
+            <li>A regex based router</li>
+            <li>A standalone Webserver for production or testing purposes</li>
+            <li>A template parser with conditions, loops and multi-tier object lookup / replacement</li>
+            <li>A model to interact with mysql and mongo databases</li>
+            <li>Automatic string escaping for html / js</li>
+            <li>A creole parser</li>
+            <li>Easy uniform access to get/post/cookie information as headers, responses</li>
+            <li>A static file handler</li>
+            <li>Fully documented code</li>
+            <li>As a bonus, there's several plugins:
+              <ul>
+                <li>OpenID login</li>
+                <li>A logging framework / viewer</li>
+              </ul>
+            <li>
+          </ul>
+          <h2>Get µWeb now! <sub>Its only 121kb!</sub></h2>
+          <p>µWeb is Opensource software which you can use in your own projects, build upon, change and redistribute.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>
