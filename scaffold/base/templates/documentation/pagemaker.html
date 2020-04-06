@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <h2>PageMaker</h2>
+        <p>
+          PageMaker is the Controller of the MVC approach in µWeb. 
+          After a request is received by the web server and wrapped inside a Request object, it is routed here to be answered.
+        </p>
+        <p>
+          In the PageMaker, there might be database lookups done through the data abstraction layer (model) and likely output is sent back making use of the TemplateParser.
+        </p>
+
+        <div id="minimal_pagemaker">
+          <h3>A very minimal PageMaker</h3>
+          <p>
+            In the simplest form, a PageMaker for a project subclasses from µWeb's default PageMaker class and provides its own methods to handle requests. 
+            The full source for this would look something like this:
+          </p>
+          <pre>
+            <code>
+              #!/usr/bin/python
+              """PageMaker demonstration module"""
+
+              # uWeb framework
+              import uweb3
+
+              class Minimalist(uweb3.PageMaker):
+                def Index(self):
+                  return 'Welcome to our website, it is still very much under construction.'
+
+                def Catchall(self, path):
+                  return 'The requested page %r does not exist yet' % path
+            </code>
+          </pre>
+        </div>
+
+        <div id="debugging_pagemaker">
+          <h3>DebuggingPageMaker</h3>
+          <p>
+            Before we do anything else, during development you are strongly advised to use µWeb's DebuggingPageMaker. 
+            This has a lot of additional features for when something goes wrong on the server side. 
+            When the regular PageMaker runs into a server side error, it returns a very plain HTTP 500 response:
+          </p>
+          <code>INTERNAL SERVER ERROR (HTTP 500) DURING PROCESSING OF '/'</code>
+          <p>
+            Where '/' is the path requested by the client. 
+            When running DebuggingPageMaker there is a significantly more helpful (for the developer at least) page whenever an internal server error is encountered. 
+            It will show a full stack trace, the local variables on each stack level (typically at the point of calling another function), 
+            which helps to arrive to the point of failure more quickly.
+          </p>
+          <p>
+            To use, just subclass your PageMaker from DebuggingPageMaker:
+          </p>
+          <code>class Minimalist(uweb3.DebuggingPageMaker)</code>
+          <p>
+            Example Internal Server Error response as image or in the µWeb demo project
+            In all cases, an internal server error will cause a full stacktrace to be logged in the log file database.
+          </p>
+        </div>
+
+        <div id="pagemaker_templateparser">
+          <h3>Templateparser</h3>
+          <p>
+            The µWeb TemplateParser is available on the standard PageMaker instance. When using PageMaker, 
+            an instantiated TemplateParser instance is available through the parser member of PageMaker. 
+            Basic usage looks like this:
+          </p>
+          <pre>
+            <code>
+              import uweb3
+              import time
+
+              class TemplateDemo(uweb3.PageMaker):
+                def VersionPage(self):
+                  return self.parser.Parse(
+                    'version.utp', year=time.strftime('%Y'), version=uweb.__version__)
+            </code>
+          </pre>
+
+          <p>The example template for the above file could look something like this:</p>
+          <pre>
+            <code>
+              &lt;!DOCTYPE html&gt;
+              &lt;html&gt;
+              &lt;head&gt;
+              &lt;title&gt;µWeb version info&lt;/title&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+              &lt;p&gt;µWeb version [version] - Copyright 2010-[year] Underdark&lt;/p&gt;
+              &lt;/body&gt;
+              &lt;/html&gt;
+            </code>
+          </pre>
+          <p>And would result in the following output:</p>
+          <pre>
+            <code>
+              &lt;!DOCTYPE html&gt;
+              &lt;html&gt;
+              &lt;head&gt;
+              &lt;title&gt;µWeb version info&lt;/title&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+              &lt;p&gt;µWeb version 0.12 - Copyright 2010-2012 Underdark&lt;/p&gt;
+              &lt;/body&gt;
+              &lt;/html&gt;
+            </code>
+          </pre>
+          <p>Full documentation, with plenty of example template uses can be found on the TemplateParser wiki-entry.</p>
+        </div>  
+        <div id="template_directory_configuration">
+          <h3>Template directory configuration</h3>
+          <p>
+            By default, template are loaded from the 'templates' directory that is expected to be on the same path as the pagemaker module. 
+            If your pagemaker is located on /var/www/uweb_project/project.py, then templates will be automatically loaded from /var/www/uweb_project/templates/.
+          </p>
+          <p>
+            To change the default template loading path, define a new path in the class variable TEMPLATE_DIR. This should be a relative path (and defaults to 'templates').
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
