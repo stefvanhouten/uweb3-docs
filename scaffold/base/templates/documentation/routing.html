@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <h2>Routing</h2>
+
+        <div id="routing_explained">
+          <h3>Routing explained [outdated]</h3>
+          <p>
+            When a request is sent to µWeb, the first thing that needs to be made is the decision where and how to handle it. 
+            The request router is the place where this happens. 
+            The router employed in µWeb is based on regular expressions, 
+            and delegates the request to the handler associated with the first matching expression.
+          </p>
+          <p>
+            Before we explain everything there is know about routes and handlers, 
+            an example of how a router would look. 
+            The example given is a very stripped down version of the handler from the uweb_info example project:
+          </p>
+          <pre>
+            <code>
+              import uweb
+              from uweb.uweb_info import pages
+
+              PAGE_CLASS = pages.PageMaker
+              ROUTES = (
+                  ('/static/(.*)', 'Static'),
+                  ('/(broken.*)', 'FourOhFour'),
+                  ('/haltandcatchfire', 'MakeFail'),
+                  ('/json', 'Json'),
+                  ('/text', 'Text'),
+                  ('/redirect/(.*)', 'Redirect'),
+                  ('/OpenIDLogin', '_OpenIdInitiate'),
+                  ('/OpenIDValidate', '_OpenIdValidate'),
+                  ('/ULF-Challenge', '_ULF_Challenge'),
+                  ('/ULF-Login', '_ULF_Verify'),
+                  ('/(.*)', 'Index'))
+
+              uweb.ServerSetup()
+            </code>
+          </pre>
+          <p>
+            In the example above, the following things happen:
+          </p>
+          <ul>
+            <li>
+              Firstly, we import the uweb package, since we need that to configure the webserver from
+            </li>
+            <li>
+              Secondly, we import the module where the class with our handling methods is defined (the uweb.uweb_info.pages module).
+            </li>
+            <li>
+              PAGE_CLASS is the global that holds a reference to the PageMaker subclass for your project, from where requests are handled.
+              ROUTES is the global that defines the various requests that the router understands, and directs them to the (named) method of the PAGE_CLASS.
+            </li>
+            <li>
+              Finally, uweb.ServerSetup() starts the webserver for those cases where it runs StandAlone (and does some initial setting up for when it runs using Apache)
+            </li>
+          </ul>
+        </div>
+
+        <div id="routing_arguments">
+          <h3>Arguments from the request string</h3>
+          <p>
+            Oftentimes, there are parts of the request string that are needed further on in the process.
+            While it's possible to extract these in the PageMaker methods, this is inconvenient, and the router has the means to do this. 
+            As can be seen in the router example above, some of the regular expressions have capture groups defined. 
+            These capture groups are provided to the PageMaker method as positional arguments. 
+            For example:
+          </p>
+          <p>
+            Requesting "/user/elmer/edit/27" on the following router:
+          </p>
+          <pre>
+            <code>
+              PAGE_CLASS = blog.BlogPages
+              ROUTES = (
+                  ('/user/(\w*)/edit/(\d*)', 'EditArticle'),
+                  ('/', 'Index'))
+            </code>
+          </pre>
+          <p>
+            Will end up calling the method blog.BlogPages.EditArticle with the arguments ('Elmer', '27'). 
+            Note that all arguments are provided as strings, type-conversion is left to the developer.
+          </p>
+        </div>
+
+        <div id="routing_regex">
+          <h3>Arguments from the request string</h3>
+          <p>
+            How to use various other url formats:
+          </p>
+          <ul>
+            <li>
+              To match one or more letters, numbers, dashes and spaces, use this: '([\w\- ]+)'
+            </li>
+            <li>
+              Match optional trailing slashes (so that requests don't end up 404'ing because of an added slash) add: '/?'
+            </li>
+            <li>
+              To match optional an optional page number: 'article/([\w\- ]+)/?(\d+)?'
+              <ul>
+                <li>
+                  This matches /article/cookies_are_delicious
+                </li>
+                <li>
+                  As well as /article/cookies_are_delicious/2
+                </li>
+                <li>
+                  And also /article/cookies_are_delicious/ – to allow for trailing slashes that are almost certain to happen
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

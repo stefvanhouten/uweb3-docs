@@ -12,3 +12,6 @@ class PageMaker(uweb3.DebuggingPageMaker):
 
   def Configuartion(self):
     return self.parser.Parse('documentation/configuartion.html')
+
+  def Routing(self):
+    return self.parser.Parse('documentation/routing.html')

@@ -31,6 +31,7 @@ def main():
       ('/documentation/installation', 'Installation'),
       ('/documentation/getting_started', 'GettingStarted'),
       ('/documentation/configuartion', 'Configuartion'),
+      ('/documentation/routing', 'Routing'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
       ]
