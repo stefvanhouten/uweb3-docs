@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <div id="model">
+          <h2>Model</h2>
+          <p>
+            The µWeb framework provides a model module with the intention of simplifying database access. The design goal is to provide a rich abstraction that 
+          </p>
+          <ul>
+          <li>takes away the tedious work of retrieving, creating and deleting records</li>
+            <li>can load its parent objects automatically if so required</li>
+            <li><em>does <strong>not</strong> get in the way of the developer</em></li>
+          </ul>
+          <p>
+            Making database interaction easier without restricting the abilities of the developer is our main goal. 
+            Some default mechanisms make assumptions on the way the database is organized, 
+            but these are well-documented, and it's entirely possible to change the behavior of these mechanisms.
+          </p>
+        </div>
+        <div id="record">
+          <p>
+            The basic idea of the Record class is that it is a container for your database records, 
+            with related records automatically loaded as needed, and custom methods that provide more info, child objects, etc. 
+            Outlined below are the default features available, with minimal configuration requirements.
+          </p>
+        </div>
+        <div id="your_first_record_class">
+          <h3>Your first Record class</h3>
+          <p>
+            To create your own Record subclass, nothing is required beyond the class' name. The following example substitutes a complete working example:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> <span class="include">uweb3</span> <span class="keyword">import</span> <span class="include">model</span>
+<span class="line-numbers">2</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers">3</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages stored in the database.</span><span class="delimiter">"""</span></span>
+</span></code></pre>
+        </div>
+        <div id="loading_fields_from_primary_key">
+          <h3>Loading fields from primary key</h3>
+          <p>
+            The Record class comes loaded with a way to load records from your database using the FromPrimary method. 
+            This is a classmethod available on the Record class and all your own subclasses, and when given a connection and primary key value, 
+            will load that record from the database. Provided you have a database that looks like this:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>-- TABLE `message`
+<span class="line-numbers">2</span>+----+--------+--------------------------------------------------+
+<span class="line-numbers">3</span>| ID | author | message                                          |
+<span class="line-numbers">4</span>+----+--------+--------------------------------------------------+
+<span class="line-numbers">5</span>|  1 | Elmer  | First message!                                   |
+<span class="line-numbers">6</span>|  2 | Bobby  | Robert'); DROP TABLE Students;--                 |
+<span class="line-numbers">7</span>|  3 | Elmer  | You didn't think it would be this easy, did you? |
+<span class="line-numbers">8</span>+----+--------+--------------------------------------------------+
+</span></code></pre>
+          <p>You can load data from this table with the following code:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="comment"># The model:</span>
+<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">uweb3</span> <span class="keyword">import</span> <span class="include">model</span>
+<span class="line-numbers"> 3</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers"> 4</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages stored in the database.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 5</span>
+<span class="line-numbers"> 6</span><span class="comment"># Using this:</span>
+<span class="line-numbers"> 7</span>&gt;&gt;&gt; message = Message.FromPrimary(db_conn, <span class="integer">1</span>)
+<span class="line-numbers"> 8</span>&gt;&gt;&gt; <span class="keyword">print</span> message
+<span class="line-numbers"> 9</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">First message!</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1L</span>, <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Elmer</span><span class="delimiter">'</span></span>})
+</span></code></pre>
+        </div>
+        <div id="changing_the_primary_key_field">
+          <h3>Changing the primary key field</h3>
+          <p>
+            By default, Record uses a primary key called 'ID'. You can change this to any value you like,
+            and FromPrimary will automatically work based on that value, and all other methods and functionality of 
+            the class will also use this new definition (deleting, creating and auto-loading from related tables, 
+            which are all explained later).
+          </p>
+          <p>
+            To change the primary key field, create a class with a defined _PRIMARY_KEY class variable:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> <span class="include">uweb3</span> <span class="keyword">import</span> <span class="include">model</span>
+<span class="line-numbers">2</span><span class="keyword">class</span> <span class="class">Country</span>(model.Record):
+<span class="line-numbers">3</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for a country table.</span><span class="content"></span></span>
+<span class="line-numbers">4</span><span class="comment"><span class="content"></span><span class="content"></span></span>
+<span class="line-numbers">5</span><span class="comment"><span class="content"></span><span class="content">  This class uses the ISO-3166-1 alpha2 country code as primary key.</span><span class="content"></span></span>
+<span class="line-numbers">6</span><span class="comment"><span class="content"></span><span class="content">  </span><span class="delimiter">"""</span></span>
+<span class="line-numbers">7</span>  _PRIMARY_KEY = <span class="string"><span class="delimiter">'</span><span class="content">alpha2</span><span class="delimiter">'</span></span>
+</span></code></pre>
+        </div>
+        <div id="compound_primary_keys">
+          <h3>Compound primary keys</h3>
+          <p>
+            The µWeb model also supports compound primary keys, with one limitation: AUTO_INCREMENT fields 
+            are not supported for creation of the Record, all values need to be provided for it.
+          </p>
+          <p>
+            Loading values from a compound primary keys works by passing a tuple instead of a single value:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="comment"># The model:</span>
+<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">uweb3</span> <span class="keyword">import</span> <span class="include">model</span>
+<span class="line-numbers"> 3</span><span class="keyword">class</span> <span class="class">MonthReport</span>(model.Record):
+<span class="line-numbers"> 4</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for the monthReport table.</span><span class="content"></span></span>
+<span class="line-numbers"> 5</span><span class="comment"><span class="content"></span><span class="content"></span></span>
+<span class="line-numbers"> 6</span><span class="comment"><span class="content"></span><span class="content">  This is keyed on a composite of both year and month, foregoing the need for a separate AUTO_INCREMENT field.</span><span class="content"></span></span>
+<span class="line-numbers"> 7</span><span class="comment"><span class="content"></span><span class="content">  </span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 8</span>  _PRIMARY_KEY = <span class="string"><span class="delimiter">'</span><span class="content">year</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">month</span><span class="delimiter">'</span></span>
+<span class="line-numbers"> 9</span>
+<span class="line-numbers"><strong>10</strong></span><span class="comment"># Using this:</span>
+<span class="line-numbers">11</span>&gt;&gt;&gt; report = MonthReport.FromPrimary(db_conn, (<span class="integer">2012</span>, <span class="integer">5</span>))
+<span class="line-numbers">12</span>&gt;&gt;&gt; <span class="keyword">print</span> report
+<span class="line-numbers">13</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">report</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Things went really well</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">month</span><span class="delimiter">'</span></span>: <span class="integer">5</span>, <span class="string"><span class="delimiter">'</span><span class="content">year</span><span class="delimiter">'</span></span>: <span class="integer">2012</span>})
+</span></code></pre>
+        </div>
+        <div id="class_and_table_relation">
+          <h3>Class and table relation</h3>
+          <p>
+            By default, the assumption is made that the table name is the same as the class name, 
+            with the first letter lowercase. <strong>The table related to the class 
+              <code>Message</code> would be <code>message</code>.
+            </strong> To change this behavior, assign your own table name to the <code>_TABLE</code> 
+            class constant. This new table name will then be used in all built-in Record methods:
+          </p>
+
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> <span class="include">uweb3</span> <span class="keyword">import</span> <span class="include">model</span>
+<span class="line-numbers">2</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers">3</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages stored in the database.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers">4</span>  _TABLE = <span class="string"><span class="delimiter">'</span><span class="content">MyMessage</span><span class="delimiter">'</span></span>
+</span></code></pre>
+        </div>
+        <div id="creating_records">
+          <h3>Creating records</h3>
+          <p>
+            To create a record in the database, you can use the classmethod Create. 
+            This takes the connection and a dictionary of the keys and values that should be inserted into the database. 
+            Using the Message class we defined earlier, creating a new record is a relatively simple call:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; message = Message.Create(db_conn, {<span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Bob</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Another message</span><span class="delimiter">'</span></span>})
+<span class="line-numbers">2</span>&gt;&gt;&gt; <span class="keyword">print</span> message
+<span class="line-numbers">3</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Another message</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">4L</span>, <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Bob</span><span class="delimiter">'</span></span>})
+</span></code></pre>
+          <p><strong>N.B.</strong> Skipping fields that are optional in the database is allowed, 
+            but their default values assigned by the database will <em>not</em> be reflected in the object. 
+            That is, the record will not be reloaded after storing. The primary</p>
+        </div>
+        <div id="deleting_records">
+          <h3>Deleting records</h3>
+          <p>
+            Records can be deleted from the database either from a loaded object, or using the DeletePrimary classmethod. 
+            This latter removes the record from the database using the primary key to select it.
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers"> 2</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span><span class="comment"># Loading and deleting an active record.</span>
+<span class="line-numbers"> 5</span>&gt;&gt;&gt; bad_record = Message.FromPrimary(db_connection, <span class="integer">3</span>)
+<span class="line-numbers"> 6</span>&gt;&gt;&gt; bad_record.Delete()
+<span class="line-numbers"> 7</span>
+<span class="line-numbers"> 8</span><span class="comment"># Deleting a record based on its primary key.</span>
+<span class="line-numbers"> 9</span>&gt;&gt;&gt; Message.DeletePrimary(db_connection, <span class="integer">2</span>)
+</span></code></pre>
+        </div>
+        <div id="listing_all_records">
+          <h3>Listing all records</h3>
+          <p>
+            For situations where all records must be retrieved or processed, there is the List classmethod. 
+            This takes the connection as argument and iterates over all records in the database:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers"> 2</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span><span class="comment"># List all messages:</span>
+<span class="line-numbers"> 5</span>&gt;&gt;&gt; <span class="keyword">for</span> message <span class="keyword">in</span> Message.List(db_connection):
+<span class="line-numbers"> 6</span>...   <span class="keyword">print</span> message
+<span class="line-numbers"> 7</span>...
+<span class="line-numbers"> 8</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">First message!</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1L</span>, <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: <span class="integer">1</span>})
+<span class="line-numbers"> 9</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">"</span><span class="content">Robert'); DROP TABLE Students;--</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">2L</span>, <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: <span class="integer">2</span>})
+<span class="line-numbers"><strong>10</strong></span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">"</span><span class="content">You didn't think it would be this easy, did you?</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">3L</span>, <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: <span class="integer">1</span>})
+</span></code></pre>
+        </div>
+        <div id="on_demand_loading_of_referenced_records">
+          <h3>On-demand loading of referenced records</h3>
+          <p>In databases that are more complex than a single table (nearly ''all''), information is often normalized. 
+            That is, the author information in our previously demonstrated <strong>message</strong> 
+            table will be stored in a separate <strong>author</strong> table. 
+            The author field on message records will be a <em>reference</em> to a record in the author table.
+          </p>
+          <p>
+            Consider the following tables in your database:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span>-- TABLE `message`
+<span class="line-numbers"> 2</span>+----+--------+--------------------------------------------------+
+<span class="line-numbers"> 3</span>| ID | author | message                                          |
+<span class="line-numbers"> 4</span>+----+--------+--------------------------------------------------+
+<span class="line-numbers"> 5</span>|  1 |      1 | First message!                                   |
+<span class="line-numbers"> 6</span>|  2 |      2 | Robert'); DROP TABLE Students;--                 |
+<span class="line-numbers"> 7</span>|  3 |      1 | You didn't think it would be this easy, did you? |
+<span class="line-numbers"> 8</span>+----+--------+--------------------------------------------------+
+<span class="line-numbers"> 9</span>
+<span class="line-numbers"><strong>10</strong></span>-- TABLE `author`
+<span class="line-numbers">11</span>+----+-------+--------------------+
+<span class="line-numbers">12</span>| ID | name  | emailAddress       |
+<span class="line-numbers">13</span>+----+-------+--------------------+
+<span class="line-numbers">14</span>|  1 | Elmer | elmer@underdark.nl |
+<span class="line-numbers">15</span>|  2 | Bobby | bobby@tables.com   |
+<span class="line-numbers">16</span>+----+-------+--------------------+
+</span></code></pre>
+          <p>And the following class definitions in Python:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> <span class="include">uweb</span> <span class="keyword">import</span> <span class="include">model</span>
+<span class="line-numbers">2</span><span class="keyword">class</span> <span class="class">Author</span>(model.Record):
+<span class="line-numbers">3</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for author records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers">4</span>
+<span class="line-numbers">5</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers">6</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages records.</span><span class="delimiter">"""</span></span>
+</span></code></pre>
+          <p>
+            This makes it possible to retrieve a message, and from that Message object, retrieve the author information. 
+            This is done when the information is requested, and not pre-loaded beforehand. 
+            This means that retrieving a thousand Message objects will <strong>not</strong> 
+            trigger an additional 1000 queries to retrieve the author information, 
+            if that information might not be used at all.
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span>&gt;&gt;&gt; message = Message.FromPrimary(db_conn, <span class="integer">1</span>)
+<span class="line-numbers"> 2</span>&gt;&gt;&gt; message
+<span class="line-numbers"> 3</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">First message!</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1L</span>, <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: <span class="integer">1</span>})
+<span class="line-numbers"> 4</span><span class="comment"># This is the same message we saw before, without author information.</span>
+<span class="line-numbers"> 5</span><span class="comment"># However, retrieving the author field specifically, provides its record:</span>
+<span class="line-numbers"> 6</span>&gt;&gt;&gt; message[<span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>]
+<span class="line-numbers"> 7</span>Author({<span class="string"><span class="delimiter">'</span><span class="content">emailAddress</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">elmer@underdark.nl</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1</span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Elmer</span><span class="delimiter">'</span></span>})
+<span class="line-numbers"> 8</span>&gt;&gt;&gt; message
+<span class="line-numbers"> 9</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">First message!</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1L</span>,
+<span class="line-numbers"><strong>10</strong></span>         <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: Author({<span class="string"><span class="delimiter">'</span><span class="content">emailAddress</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">elmer@underdark.nl</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1</span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Elmer</span><span class="delimiter">'</span></span>})})
+</span></code></pre>
+          <p>
+            This works on the assumption that <strong>any field name that is also the table name of another Record class, 
+            is a reference to that table</strong>. In the case of the example above: The message table contains a field 
+            <em>author</em>. There exists a Record subclass for that table (namely <em>Author</em>, table 'author'). 
+            The value of <code>message['author']</code> (=<code>1</code>), 
+            is now used to load an Author record using the FromPrimary classmethod, 
+            with <code>1</code> as the primary key value.
+          </p>
+          <ul>
+            <li>
+              <code>None</code> specifies that the field does 
+              <strong>not</strong> represent a reference, and should be used as-is.
+            </li>
+              <li>
+                Classes may be given as string because at the time of evaluation, 
+                not all classes exist, and attempting using a class directly might result in a 
+                <code>NameError</code>. This "class as string" exception only exists for 
+                classes that are defined in the same module, and exists so that the model 
+                does not force you to define your classes in a certain order. 
+                It also enables the case where two tables cross-reference eachother.
+              </li>
+            </ul>
+            <p>
+              The following is an example case where the table names are plural, but the field names are singular:
+            </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">from</span> <span class="include">uweb</span> <span class="keyword">import</span> <span class="include">model</span>
+<span class="line-numbers"> 2</span><span class="keyword">class</span> <span class="class">Author</span>(model.Record):
+<span class="line-numbers"> 3</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for author records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 4</span>  _TABLE = <span class="string"><span class="delimiter">'</span><span class="content">authors</span><span class="delimiter">'</span></span>
+<span class="line-numbers"> 5</span>
+<span class="line-numbers"> 6</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers"> 7</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 8</span>  _TABLE = <span class="string"><span class="delimiter">'</span><span class="content">messages</span><span class="delimiter">'</span></span>
+<span class="line-numbers"> 9</span>  _FOREIGN_RELATIONS = {<span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: Author}
+</span></code></pre>
+        </div>
+        <div id="loading_child_objects_1_to_n">
+          <h3>Loading child objects (1-to-n relations)</h3>
+          <p>
+            The model provides a generic method to retrieve child records (that is, <em>1 to n</em> relations) of a record. 
+            The desired relations <em>should</em> have an associated Record class. 
+            The method to use is <code>_Children</code>, which is a private method of any <code>Record</code> class.
+            As its argument, it needs the name of a child class. 
+            Returned is an iterator that yields instances of the given <code>Record</code> subclass.
+          </p>
+          <p>
+            Given its name and usage, the suggested usage of this is to wrap a more descriptive method around this:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">from</span> <span class="include">uweb</span> <span class="keyword">import</span> <span class="include">model</span>
+<span class="line-numbers"> 2</span><span class="keyword">class</span> <span class="class">Author</span>(model.Record):
+<span class="line-numbers"> 3</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for author records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 4</span>  <span class="keyword">def</span> <span class="function">Messages</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers"> 5</span>    <span class="comment"><span class="delimiter">"""</span><span class="content">Returns an iterator for all messages written by this author.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 6</span>    <span class="keyword">return</span> <span class="predefined-constant">self</span>._Children(Message)
+<span class="line-numbers"> 7</span>
+<span class="line-numbers"> 8</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers"> 9</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"><strong>10</strong></span>
+<span class="line-numbers">11</span><span class="comment"># Caller code</span>
+<span class="line-numbers">12</span>&gt;&gt;&gt; elmer = Author.FromPrimary(db_connection, <span class="integer">1</span>)
+<span class="line-numbers">13</span>&gt;&gt;&gt; <span class="keyword">for</span> message <span class="keyword">in</span> elmer.Messages():
+<span class="line-numbers">14</span>...   <span class="keyword">print</span> message
+<span class="line-numbers">15</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">First message!</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1L</span>,
+<span class="line-numbers">16</span>         <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: Author({<span class="string"><span class="delimiter">'</span><span class="content">emailAddress</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">elmer@underdark.nl</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1</span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Elmer</span><span class="delimiter">'</span></span>})})
+<span class="line-numbers">17</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">"</span><span class="content">You didn't think it would be this easy, did you?</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">3L</span>,
+<span class="line-numbers">18</span>         <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: Author({<span class="string"><span class="delimiter">'</span><span class="content">emailAddress</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">elmer@underdark.nl</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1</span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Elmer</span><span class="delimiter">'</span></span>})})
+<span class="line-numbers">19</span><span class="comment"># Reflowing to keep things legible</span>
+</span></code></pre>
+          <p>
+            What you can see here is that all messages written by the given author are retrieved from the database, 
+            and presented. This is done with a single database query, 
+            where the <em>child</em> Record's table is searched for rows where the 
+            <code>relation_field</code> is equal to the parent Record's primary key value. 
+            This <code>relation_field</code> is an optional argument to the <code>_Children</code> method, 
+            and defaults to the class' table name.
+          </p>
+          <strong>
+              N.B. <code>print</code> and the methods <code>(iter)items</code>,
+             <code>(iter)values</code> all cause the object's foreign relations to be retrieved.
+            </strong>
+          <p>
+            The same example, this time with pluralized table names:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">class</span> <span class="class">Author</span>(model.Record):
+<span class="line-numbers"> 2</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for author records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 3</span>  _TABLE = <span class="string"><span class="delimiter">'</span><span class="content">authors</span><span class="delimiter">'</span></span>
+<span class="line-numbers"> 4</span>
+<span class="line-numbers"> 5</span>  <span class="keyword">def</span> <span class="function">Messages</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers"> 6</span>    <span class="comment"><span class="delimiter">"""</span><span class="content">Returns an iterator for all messages written by this author.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 7</span>    <span class="keyword">return</span> <span class="predefined-constant">self</span>._Children(Message, relation_field=<span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>)
+<span class="line-numbers"> 8</span>
+<span class="line-numbers"> 9</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers"><strong>10</strong></span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers">11</span>  _TABLE = <span class="string"><span class="delimiter">'</span><span class="content">messages</span><span class="delimiter">'</span></span>
+<span class="line-numbers">12</span>  _FOREIGN_RELATIONS = {<span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: Author}
+</span></code></pre>
+        </div>
+        <div id="updating_a_record">
+          <h3>Updating a record</h3>
+          <p>
+            After loading a record, it can be altered, and saved. 
+            These changes (and optionally changes to nested records), 
+            will be committed to the database, and reflected in the current loaded record.
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">class</span> <span class="class">Author</span>(model.Record):
+<span class="line-numbers"> 2</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for author records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span><span class="keyword">class</span> <span class="class">Message</span>(model.Record):
+<span class="line-numbers"> 5</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Abstraction class for messages records.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 6</span>
+<span class="line-numbers"> 7</span>&gt;&gt;&gt; retort = Message.FromPrimary(db_connection, <span class="integer">3</span>)
+<span class="line-numbers"> 8</span>&gt;&gt;&gt; retort[<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>] = <span class="string"><span class="delimiter">"</span><span class="content">Please go away Bobby.</span><span class="delimiter">"</span></span>
+<span class="line-numbers"> 9</span>&gt;&gt;&gt; <span class="comment"># Our changes are not yet reflected in the database:</span>
+<span class="line-numbers"><strong>10</strong></span>&gt;&gt;&gt; <span class="keyword">print</span> Message.FromPrimary(db_connection, <span class="integer">3</span>)
+<span class="line-numbers">11</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">"</span><span class="content">You didn't think it would be this easy, did you?</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">3L</span>,
+<span class="line-numbers">12</span>         <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: Author({<span class="string"><span class="delimiter">'</span><span class="content">emailAddress</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">elmer@underdark.nl</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1</span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Elmer</span><span class="delimiter">'</span></span>})})
+<span class="line-numbers">13</span>&gt;&gt;&gt; retort.Save()
+<span class="line-numbers">14</span>&gt;&gt;&gt; <span class="comment"># Now our changes are committed to the database:</span>
+<span class="line-numbers">15</span>&gt;&gt;&gt; <span class="keyword">print</span> Message.FromPrimary(db_connection, <span class="integer">3</span>)
+<span class="line-numbers">16</span>Message({<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Please go away Bobby.</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">3L</span>,
+<span class="line-numbers">17</span>         <span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>: Author({<span class="string"><span class="delimiter">'</span><span class="content">emailAddress</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">elmer@underdark.nl</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">ID</span><span class="delimiter">'</span></span>: <span class="integer">1</span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Elmer</span><span class="delimiter">'</span></span>})})
+</span></code></pre>
+          <p>
+            To save all changes in related fields, we can provide the named argument 
+            <strong>save_foreign</strong> and set it to <em>True</em>. 
+            This way we could alter both the author name and the message itself in one database transaction.
+          </p>
+        </div>
+        <div id="comparisons">
+          <h3>comparisons</h3>
+          <h4>Equality</h4>
+          <p>Records must pass the following criteria to be considered equal to one another:</p>
+          <ol>
+            <li><strong>Type</strong>: Two objects must be of the same type (class)</li>
+            <li><strong>Primary key</strong>: The primary key values must compare equal</li>
+            <li><strong>Foreign relations</strong>: Foreign relations must be the same. If these are not resolved in one object but are in the other, the primary key of the resolved object will be compared to the data of the other record.</li>
+            <li><strong>Data</strong>: All remaining data fields must be equal and symmetric (i.e. both objects describe the same fields)</li>
+          </ol>
+          <h4>Greater / smaller</h4>
+          <p>
+            Comparing two objects with one another to tell their relative order can only be done if they are of the same type. 
+            If they are, the comparison is done based on the primary key values of the records. 
+            In most cases this will result in an ordering similar to the database-insert order.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

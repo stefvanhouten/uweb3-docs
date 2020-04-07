@@ -261,3 +261,13 @@ code .content {
 .syntaxhl .tag {
   color: #007700;
 }
+.syntaxhl .integer {
+  color: #0000DD;
+}
+
+#side-nav ul li{
+  list-style: none;
+}
+#side-nav ul li ul li {
+  list-style: decimal;
+}

@@ -33,6 +33,9 @@ def main():
       ('/documentation/configuartion', 'Configuartion'),
       ('/documentation/routing', 'Routing'),
       ('/documentation/pagemaker', 'DocPageMaker'),
+      ('/documentation/model', 'DocModel'),
+      ('/documentation/templateparser', 'DocTemplateParser'),
+      ('/documentation/request', 'DocRequest'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
       ]
