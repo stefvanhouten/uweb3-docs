@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <h1>TemplateParser</h1>
+        <p>
+          The µWeb TemplateParser is a in-house developed templating engine that provides tag replacement, 
+          tag-functions and template control functions. This document will describe the following:
+        </p>
+        <ul>
+          <li><strong><a href="#using_templateparser_inside_uweb">Using TemplateParser</a></strong> inside a µWeb PageMaker</li>
+            <li>The <strong><a href="#template_class">Template class</a></strong>, used to parse the templating language</li>
+            <li>The <strong><a href="#parser_class">Parser class</a></strong>, which provides template loading and caching</li>
+            <li><strong><a href="#templating_language_syntax">Template syntax</a></strong>, an overview of the language's constructs and behaviors</li>
+          </ul>
+          <p>First though, to help with understanding the TemplateParser, a minimal size template document:</p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>Hello [title] [name]
+</span></code></pre>
+        <p>
+          The above document contains two simple template tags.
+          These tags are delimited by square brackets, and they will be replaced by the named argument provided during parsing. 
+          If this name is not present, then the literal presentation of the tag will remain in the output.
+        </p>
+        <div id="using_templateparser_inside_uweb">
+          <h2>Using TemplateParser inside µWeb</h2>
+          <p>Within the default µWeb <code>PageMaker</code>, there is a <code>parser</code> property, which provides a <a href="#parser">Parser</a> object. The class constant <code>TEMPLATE_DIR</code> provides the template search directory. The default template directory is <code>'templates'</code>. <strong>N.B.</strong> This path is relative to the file that contains the PageMaker class.</p>
+          <p>
+            An example of TemplateParser to create a complete response:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">import</span> <span class="include">uweb</span>
+<span class="line-numbers">2</span><span class="keyword">import</span> <span class="include">time</span>
+<span class="line-numbers">3</span>
+<span class="line-numbers">4</span><span class="keyword">class</span> <span class="class">PageMaker</span>(uweb.PageMaker):
+<span class="line-numbers">5</span>  <span class="keyword">def</span> <span class="function">VersionPage</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">6</span>    <span class="keyword">return</span> <span class="predefined-constant">self</span>.parser.Parse(
+<span class="line-numbers">7</span>      <span class="string"><span class="delimiter">'</span><span class="content">version.html</span><span class="delimiter">'</span></span>, year=time.strftime(<span class="string"><span class="delimiter">'</span><span class="content">%Y</span><span class="delimiter">'</span></span>), version=uweb.__version__)
+</span></code></pre>
+          <p>The example template for the above file could look something like this:</p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb version info<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>    <span class="tag">&lt;p&gt;</span>µWeb version [version] - Copyright 2010-[year] Underdark<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers"> 8</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"> 9</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
+          <p>And would result in the following output:</p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb version info<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>    <span class="tag">&lt;p&gt;</span>µWeb version 0.12 - Copyright 2010-2012 Underdark<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers"> 8</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"> 9</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
+          <p>
+            With these initial small demonstrations behind us, let's explore the 
+            <code>TemplateParser</code> further
+          </p>
+        </div>
+        <div id="template_class">
+          <h1>Template class</h1>
+          <p>
+            The <code>Template</code> class provides the interface for pre-parsing templates, 
+            loading them from files and parsing single templates to completion. During pre-parsing, 
+            constructs such as loops and conditional statements are converted to 
+            <code>TemplateLoop</code> and <code>TemplateConditional</code> objects, 
+            and their scopes nested appropriately in the <code>Template</code>. 
+            Tags are replaced by <code>TemplateTag</code> instances, and text is captured in <code>TemplateText</code>. 
+            All of these provide <code>Parse</code> methods, which together result in the combined parsed template output.
+          </p>
+        </div>
+        <div id="creating_a_template">
+          <h2>Creating a template</h2>
+          <p>
+            A template is created simple by providing a string input to the <code>Template</code>'s constructor. 
+            This will return a valid Template instance (or raise an error if there is a problem with the <a href="#templating_language_syntax">syntax</a>:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">import</span> <span class="include">templateparser</span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; template = templateparser.Template(<span class="string"><span class="delimiter">'</span><span class="content">Hello [title] [name]</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>&gt;&gt;&gt; template
+<span class="line-numbers">4</span>Template([TemplateText(<span class="string"><span class="delimiter">'</span><span class="content">Hello </span><span class="delimiter">'</span></span>), TemplateTag(<span class="string"><span class="delimiter">'</span><span class="content">[title]</span><span class="delimiter">'</span></span>), TemplateText(<span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>), TemplateTag(<span class="string"><span class="delimiter">'</span><span class="content">[name]</span><span class="delimiter">'</span></span>)])
+</span></code></pre>
+        </div>
+        <div id="loading_a_template_from_file">
+          <h2>Loading a template from file</h2>
+          <p>
+            The <code>Template</code> class provides a <code>classmethod</code> called <code>FromFile</code>, which loads the template at the path.
+          </p>
+          <p>
+            Loading a template named <code>example.html</code> from the current working directory:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">import</span> <span class="include">templateparser</span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; template = templateparser.Template.FromFile(<span class="string"><span class="delimiter">'</span><span class="content">example.html</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>&gt;&gt;&gt; template
+<span class="line-numbers">4</span>Template([TemplateText(<span class="string"><span class="delimiter">'</span><span class="content">Hello </span><span class="delimiter">'</span></span>), TemplateTag(<span class="string"><span class="delimiter">'</span><span class="content">[title]</span><span class="delimiter">'</span></span>), TemplateText(<span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>), TemplateTag(<span class="string"><span class="delimiter">'</span><span class="content">[name]</span><span class="delimiter">'</span></span>)])
+</span></code></pre>
+        </div>
+        <div id="parsing_a_template">
+          <h2>Parsing a template</h2>
+          <p>
+            Parsing a template can be done by calling the <code>Template</code>'s <code>Parse</code> method. 
+            The keyword arguments provided to this call will from the replacement mapping for the template. 
+            In the following example, we will provide one such keyword, and leave the other undefined to show the 
+            (basic) behavior of the <code>Template.Parse</code> method.
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">import</span> <span class="include">templateparser</span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; template = templateparser.Template(<span class="string"><span class="delimiter">'</span><span class="content">Hello [title] [name]</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>&gt;&gt;&gt; template.Parse(title=<span class="string"><span class="delimiter">'</span><span class="content">sir</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">4</span><span class="string"><span class="delimiter">'</span><span class="content">Hello sir [name]</span><span class="delimiter">'</span></span>
+</span></code></pre>
+        </div>
+        <div id="parser_class">
+          <h1>Parser class</h1>
+          <p>
+            The <code>Parser</code> class provides simple management of multiple <code>Template</code> objects. 
+            It is mainly used to load templates from disk. When initiating a <code>Parser</code>, 
+            the first argument provides the search path from where templates should be loaded (the default is the current working directory). 
+            An optional second argument can be provided to preload the template cache: a mapping of names and <code>Template</code> objects.
+          </p>
+        </div>
+        <div id="loading_templates">
+          <h2>Loading templates</h2>
+          <p>Creating a parser object, and loading the 'example.html' template from the 'templates' directory works like this:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">import</span> <span class="include">templateparser</span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; <span class="comment"># This sets the 'templates' directory as the search path for AddTemplate</span>
+<span class="line-numbers">3</span>&gt;&gt;&gt; parser = templateparser.Parser(<span class="string"><span class="delimiter">'</span><span class="content">templates</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">4</span>&gt;&gt;&gt; <span class="comment"># Loads the 'templates/example.html' and stores it as 'example.html':</span>
+<span class="line-numbers">5</span>&gt;&gt;&gt; parser.AddTemplate(<span class="string"><span class="delimiter">'</span><span class="content">example.html</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">6</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">example.html</span><span class="delimiter">'</span></span>, title=<span class="string"><span class="delimiter">'</span><span class="content">mister</span><span class="delimiter">'</span></span>, name=<span class="string"><span class="delimiter">'</span><span class="content">Bob Dobalina</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">7</span><span class="string"><span class="delimiter">'</span><span class="content">Hello mister Bob Dobalina</span><span class="delimiter">'</span></span>
+</span></code></pre>
+          <p>Attempting to parse a template that doesn't exist in the parser cache triggers an automatic load:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser[<span class="string"><span class="delimiter">'</span><span class="content">example.html</span><span class="delimiter">'</span></span>].Parse(title=<span class="string"><span class="delimiter">'</span><span class="content">mister</span><span class="delimiter">'</span></span>, name=<span class="string"><span class="delimiter">'</span><span class="content">Bob Dobalina</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">2</span><span class="string"><span class="delimiter">'</span><span class="content">Hello mister Bob Dobalina</span><span class="delimiter">'</span></span>
+<span class="line-numbers">3</span>&gt;&gt;&gt; <span class="string"><span class="delimiter">'</span><span class="content">example.html</span><span class="delimiter">'</span></span> <span class="keyword">in</span> parser
+<span class="line-numbers">4</span><span class="predefined-constant">True</span>
+<span class="line-numbers">5</span>&gt;&gt;&gt; parser
+<span class="line-numbers">6</span>Parser({<span class="string"><span class="delimiter">'</span><span class="content">example.html</span><span class="delimiter">'</span></span>: Template([TemplateText(<span class="string"><span class="delimiter">'</span><span class="content">Hello </span><span class="delimiter">'</span></span>), 
+          TemplateTag(<span class="string"><span class="delimiter">'</span><span class="content">[title]</span><span class="delimiter">'</span></span>),<span class="line-numbers">7</span>TemplateText(<span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>),TemplateTag(<span class="string"><span class="delimiter">'</span><span class="content">[name]</span><span class="delimiter">'</span></span>)])})
+</span></code></pre>
+          <p>If these cannot be found, <code>TemplateReadError</code> is raised:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span>&gt;&gt;&gt; <span class="keyword">import</span> <span class="include">templateparser</span>
+<span class="line-numbers"> 2</span>&gt;&gt;&gt; parser = templateparser.Parser(<span class="string"><span class="delimiter">'</span><span class="content">templates</span><span class="delimiter">'</span></span>)
+<span class="line-numbers"> 3</span>&gt;&gt;&gt; parser[<span class="string"><span class="delimiter">'</span><span class="content">bad_template.html</span><span class="delimiter">'</span></span>].Parse(failure=<span class="string"><span class="delimiter">'</span><span class="content">imminent</span><span class="delimiter">'</span></span>)
+<span class="line-numbers"> 4</span>Traceback (most recent call last):
+<span class="line-numbers"> 5</span>  File <span class="string"><span class="delimiter">"</span><span class="content">&lt;stdin&gt;</span><span class="delimiter">"</span></span>, line <span class="integer">1</span>, <span class="keyword">in</span> &lt;module&gt;
+<span class="line-numbers"> 6</span>  File <span class="string"><span class="delimiter">"</span><span class="content">/var/lib/underdark/libs/uweb/templateparser.py</span><span class="delimiter">"</span></span>, line <span class="integer">147</span>, <span class="keyword">in</span> __getitem__
+<span class="line-numbers"> 7</span>    <span class="predefined-constant">self</span>.AddTemplate(template)
+<span class="line-numbers"> 8</span>  File <span class="string"><span class="delimiter">"</span><span class="content">/var/lib/underdark/libs/uweb/templateparser.py</span><span class="delimiter">"</span></span>, line <span class="integer">171</span>, <span class="keyword">in</span> AddTemplate
+<span class="line-numbers"> 9</span>    <span class="keyword">raise</span> TemplateReadError(<span class="string"><span class="delimiter">'</span><span class="content">Could not load template %r</span><span class="delimiter">'</span></span> % template_path)
+<span class="line-numbers"><strong>10</strong></span>underdark.libs.uweb.templateparser.TemplateReadError: Could <span class="keyword">not</span> load template <span class="string"><span class="delimiter">'</span><span class="content">templates/bad_template.html</span><span class="delimiter">'</span></span>
+</span></code></pre>
+        </div>
+        <div id="parse_and_parsestring_methods">
+          <h2>Parse and ParseString methods</h2>
+          <p>
+            For convencience and consistency, the <code>Parser</code> comes with two handy methods to provide parsing of 
+            <code>Template</code> objects, one from its cache, one from raw template strings. 
+            It is recommended to use these over the previously shown direct key-based access:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">import</span> <span class="include">templateparser</span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; parser = templateparser.Parser(<span class="string"><span class="delimiter">'</span><span class="content">templates</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">example.html</span><span class="delimiter">'</span></span>, title=<span class="string"><span class="delimiter">'</span><span class="content">mister</span><span class="delimiter">'</span></span>, name=<span class="string"><span class="delimiter">'</span><span class="content">Bob Dobalina</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">4</span><span class="string"><span class="delimiter">'</span><span class="content">Hello mister Bob Dobalina</span><span class="delimiter">'</span></span>
+<span class="line-numbers">5</span>&gt;&gt;&gt; parser.ParseString(<span class="string"><span class="delimiter">'</span><span class="content">Hello [title] [name]</span><span class="delimiter">'</span></span>, title=<span class="string"><span class="delimiter">'</span><span class="content">mister</span><span class="delimiter">'</span></span>, name=<span class="string"><span class="delimiter">'</span><span class="content">Bob Dobalina</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">6</span><span class="string"><span class="delimiter">'</span><span class="content">Hello mister Bob Dobalina</span><span class="delimiter">'</span></span></span></code></pre>
+        </div>
+        <div id="tempalting_language_syntax">
+          <h1>Templating language syntax</h1>
+          <p>
+            The templating syntax is relatively limited, but with the limited syntax it provides a 
+            flexible and rich system to create templates. Covered in these examples are:
+          </p>
+          <ul>
+            <li>Simple tags (used in various examples above)</li>
+              <li>Tag indexing</li>
+              <li>Tag functions</li>
+              <li>Template language constructs</li>
+            </ul>
+          <p>All examples will consist of three parts: </p>
+          <ol>
+            <li>The example template</li>
+              <li>The python invocation string (the template will be named 'example.html')</li>
+              <li>The resulting output (as source, not as parsed HTML)</li>
+            </ol>
+        </div>
+        <div id="simple_tags">
+          <h2>Simple tags</h2>
+          <p>
+            This is an example for the most basic form of template tags. 
+            The tag is enclosed by square brackets as such: <code>[tag]</code>. 
+            Tags that match a provided argument to the Parse call get replaced. 
+            If there is no argument that matches the tag name, it is returned in the output verbatim. 
+            This is also demonstrated in the below example
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb version info<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>    <span class="tag">&lt;p&gt;</span>µWeb version [version] - Copyright 2010-[year] Underdark<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers"> 8</span>    <span class="tag">&lt;p&gt;</span>
+<span class="line-numbers"> 9</span>      This [paragraph] is not replaced because there is no
+<span class="line-numbers"><strong>10</strong></span>      paragraph argument provided to the parser.
+<span class="line-numbers">11</span>    <span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers">12</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers">13</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">version.html</span><span class="delimiter">'</span></span>, year=time.strftime(<span class="string"><span class="delimiter">'</span><span class="content">%Y</span><span class="delimiter">'</span></span>), version=uweb.__version__)
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb version info<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>    <span class="tag">&lt;p&gt;</span>µWeb version 0.11 - Copyright 2010-212 Underdark<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers"> 8</span>    <span class="tag">&lt;p&gt;</span>
+<span class="line-numbers"> 9</span>      This [paragraph] is not replaced because there is no
+<span class="line-numbers"><strong>10</strong></span>      paragraph argument provided to the parser.
+<span class="line-numbers">11</span>    <span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers">12</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers">13</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
+        </div>
+        <div id="tag_indexing">
+          <h2>Tag indexing</h2>
+          <p>
+            In addition to simple (re)placement of strings using the <code>TemplateParser</code>, 
+            you can also provide it with a <code>list</code>, <code>dictionary</code>, 
+            or other indexable object, and from it, fetch various <code>indices</code>, 
+            <code>keys</code> or <code>attributes</code>. 
+            The separation character between the <em>tagname</em> and the <em>index</em> is the <em>colon</em> (":"):
+          </p>
+        </div>
+        <div id="list_tuple_index_addressing">
+          <h3>List/tuple index addressing</h3>
+          <p>
+            This works for lists and tuples, but also for any other object that supports indexing.
+            That is, every object that accepts integers on its <code>__getitem__</code> method.
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>This is [var:0] [var:1].
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">message.html</span><span class="delimiter">'</span></span>, var=(<span class="string"><span class="delimiter">'</span><span class="content">delicious</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">spam</span><span class="delimiter">'</span></span>))
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>This is delicious spam.
+</span></code></pre>
+        </div>
+        <div id="dictionary_key_addressing">
+          <h3>Dictionary key addressing</h3>
+          <p>
+            This works for dictionaries, but also for any other object that behaves like a key-value mapping. 
+            That is, every object that accepts strings on its <code>__getitem__</code> method.
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>This is [var:adjective] [var:noun].
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">message.html</span><span class="delimiter">'</span></span>, var={<span class="string"><span class="delimiter">'</span><span class="content">adjective</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">delicious</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">noun</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">spam</span><span class="delimiter">'</span></span>})
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>This is delicious spam.
+</span></code></pre>
+        </div>
+        <div id="attribute_name_addressing">
+          <h3>Attribute name addressing</h3>
+          <p>
+            This works for any object that has named attributes. If the attribute is a method, 
+            it will <strong>not</strong> be executed automatically, the return value will simply be the (un)bound method itself.
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>This is [var:adjective] [var:noun].
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">class</span> <span class="class">Struct</span>(<span class="predefined">object</span>):
+<span class="line-numbers">2</span>...   <span class="keyword">pass</span>
+<span class="line-numbers">3</span>...
+<span class="line-numbers">4</span>&gt;&gt;&gt; var = Struct()
+<span class="line-numbers">5</span>&gt;&gt;&gt; var.adjective = <span class="string"><span class="delimiter">'</span><span class="content">delicious</span><span class="delimiter">'</span></span>
+<span class="line-numbers">6</span>&gt;&gt;&gt; var.noun = <span class="string"><span class="delimiter">'</span><span class="content">spam</span><span class="delimiter">'</span></span>
+<span class="line-numbers">7</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">message.html</span><span class="delimiter">'</span></span>, var=var)
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>This is delicious spam.
+</span></code></pre>
+        </div>
+        <div id="lookup_order">
+          <h3>Lookup order</h3>
+          <p>
+            For objects and constructs that provide multiple ways of looking up information, the lookup order can be very important.
+            For any of the first three steps, if they are successful, the retrieved value is returned, and no further attempts are made:
+          </p>
+          <ol>
+            <li>If the <code>needle</code> is parseable as integer, it will first be used as an index. This will also work for mappings with numeric keys;</li>
+              <li>If the above fails, the <code>needle</code> is assumed to be a string-like mapping key, and this is attempted</li>
+              <li>If the above fails, the <code>needle</code> is used as an attribute name;</li>
+              <li>If all of the above fail, <strong><code>TemplateKeyError</code></strong> is raised, as the <code>needle</code> could not be found on the object.</li>
+            </ol>
+        </div>
+        <div id="nested_indexes">
+          <h3>Nested indexes</h3>
+          <p>
+            There may be cases where the value you need is not at the top-level index of an object. 
+            This is not a problem, since TemplateParser supports arbitrary-depth nested structures in its index-lookup:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>This is a variable from [some:levels:down:1].
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">class</span> <span class="class">Struct</span>(<span class="predefined">object</span>):
+<span class="line-numbers">2</span>...   <span class="keyword">pass</span>
+<span class="line-numbers">3</span>...
+<span class="line-numbers">4</span>&gt;&gt;&gt; var = Struct()
+<span class="line-numbers">5</span>&gt;&gt;&gt; var.levels = {<span class="string"><span class="delimiter">'</span><span class="content">down</span><span class="delimiter">'</span></span>: (<span class="string"><span class="delimiter">'</span><span class="content">the sky</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the depths</span><span class="delimiter">'</span></span>)}
+<span class="line-numbers">6</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">message.utp</span><span class="delimiter">'</span></span>, some=var)
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>This is a variable from the depths.
+</span></code></pre>
+        </div>
+        <div id="tag_functions">
+          <h3>Tag functions</h3>
+          <p>
+            Once you arrive at the tag/value you want, there's often some things that need to happen before the 
+            resulting template is sent to the requesting client (browser). 
+            HTML escaping is an obvious one, but url quoting of single arguments may also be helpful, as well as uppercasing, 
+            printing the length of a list (instead of the raw list) and various other uses
+            .</p>
+        </div>
+        <div id="default_html_escaping">
+          <h3>Default HTML escaping</h3>
+          <p>
+            Using a tag function is a fairly straightforward process, just add the name of the function after the tagname, separated by a pipe ( | ):
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>And he said: [message|html]
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">message.utp</span><span class="delimiter">'</span></span>, message=<span class="string"><span class="delimiter">'</span><span class="content">"Hello"</span><span class="delimiter">'</span></span>)
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>And he said: <span class="entity">&amp;quot;</span>Hello<span class="entity">&amp;quot;</span>
+</span></code></pre>
+          <p>
+            Using the <strong>html</strong> tag function makes the tag value safe for printing in an HTML document. 
+            Because we believe this is <em>really</em> important, the html escaping tag function is always applied when no other tag function is applied:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>And he said: [message|raw]
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">message.utp</span><span class="delimiter">'</span></span>, message=<span class="string"><span class="delimiter">'</span><span class="content">"Hello"</span><span class="delimiter">'</span></span>)
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>And he said: <span class="entity">&amp;quot;</span>Hello<span class="entity">&amp;quot;</span>
+</span></code></pre>
+          <p>
+            Only when you use another tag function, or specifically tell <code>TemplateParser</code> to push the <em>raw</em> 
+            tag value into the output, are the quotes allowed through unchanged:
+          </p>
+        </div>
+        <div id="predifined_tag_functions">
+          <h3>Predifined tag functions</h3>
+          <ul>
+            <li><strong>html</strong> – This tag function escapes content to be safe for inclusion in HTML pages. This means that the ampersand ( &amp; ), single and double quotes ( '  &nbsp;and&nbsp; " ) and the pointy brackets ( &lt; &nbsp;and&nbsp; &gt; ) are converted to their respective <a href="http://en.wikipedia.org/wiki/Character_entity_reference" class="external">character entity references</a></li>
+              <li><em>default</em> – This is the tag function that will be executed when no other tag functions have been specified for a tag. By default, this will do the same as the <strong>html</strong> tag function. This can be adjusted by assigning another tag function to this name.</li>
+              <li><strong>raw</strong> – This tag function passes the tag through without change. This is the function to use when you have no tag function to apply, but do not want the tag to be HTML-escaped.</li>
+              <li><strong>url</strong> – This tag function prepares the tag for use in URLs. Space are converted to plus-signs ( + ), and other characters that are considered unsafe for URLs are converted to <a href="http://en.wikipedia.org/wiki/Percent-encoding" class="external">percent-notation</a>.</li>
+            </ul>
+        </div>
+        <div id="adding_custom_functions">
+          <h3>Adding custom functions</h3>
+          <p>
+            Custom methods can be added to a <code>Parser</code> object using the method <code>RegisterFunction</code>. 
+            This takes a name, and a single-argument function. When this function is encountered in a tag, 
+            it will be given the current tag value, and its result will be output to the template, 
+            or passed into the next function:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">from</span> <span class="include">uweb</span> <span class="keyword">import</span> <span class="include">templateparser</span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; parser = templateparser.Parser()
+<span class="line-numbers">3</span>&gt;&gt;&gt; parser.RegisterFunction(<span class="string"><span class="delimiter">'</span><span class="content">len</span><span class="delimiter">'</span></span>, <span class="predefined">len</span>)
+<span class="line-numbers">4</span>&gt;&gt;&gt; template = <span class="string"><span class="delimiter">'</span><span class="content">The number of people in this group: [people|len].</span><span class="delimiter">'</span></span>
+<span class="line-numbers">5</span>&gt;&gt;&gt; parser.ParseString(template, elements=[<span class="string"><span class="delimiter">'</span><span class="content">Eric</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Michael</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">John</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Terry</span><span class="delimiter">'</span></span>])
+<span class="line-numbers">6</span><span class="string"><span class="delimiter">'</span><span class="content">The number of people in this group: 4.</span><span class="delimiter">'</span></span>
+</span></code></pre>
+          <p>
+            <strong>N.B.:</strong> 
+            Using custom functions (or in fact any function other than <em>html</em> or no function) will suppress HTML escaping. 
+            If your content is still user-driven, or not otherwise made safe for output, <strong>it is strongly recommended you apply html escaping</strong>. 
+            This can be achieved by chaining functions, as explained below.
+          </p>
+        </div>
+        <div id="function_chaining">
+          <h3>Function chaining</h3>
+          <p>
+            Multiple function calls can be chained after one another. 
+            The functions are processed left to right, and the result of each function is passed into the next,
+            without any intermediate editing or changes:
+          </p>
+          <p>
+            Setting up the parser and registering our tag function:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; <span class="keyword">from</span> <span class="include">uweb</span> <span class="keyword">import</span> <span class="include">templateparser</span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; parser = templateparser.Parser()
+<span class="line-numbers">3</span>&gt;&gt;&gt; parser.RegisterFunction(<span class="string"><span class="delimiter">'</span><span class="content">first</span><span class="delimiter">'</span></span>, <span class="keyword">lambda</span> x: x[<span class="integer">0</span>])
+</span></code></pre>
+          <p>
+            Working just one tag function returns the first element from the list:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; template = <span class="string"><span class="delimiter">'</span><span class="content">The first element of list: [elements|first].</span><span class="delimiter">'</span></span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; parser.ParseString(template, elements=[<span class="string"><span class="delimiter">'</span><span class="content">Eric</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Michael</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">John</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Terry</span><span class="delimiter">'</span></span>])
+<span class="line-numbers">3</span><span class="string"><span class="delimiter">'</span><span class="content">The first element of list: Eric.</span><span class="delimiter">'</span></span>
+</span></code></pre>
+          <p>
+            Repeating the function on the string returns the first character from that string:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; template = <span class="string"><span class="delimiter">'</span><span class="content">The first element of the first element of list: [elements|first|first].</span><span class="delimiter">'</span></span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; parser.ParseString(template, elements=[<span class="string"><span class="delimiter">'</span><span class="content">Eric</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Michael</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">John</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Terry</span><span class="delimiter">'</span></span>])
+<span class="line-numbers">3</span><span class="string"><span class="delimiter">'</span><span class="content">The first element of the first element of list: E.</span><span class="delimiter">'</span></span>
+</span></code></pre>
+        </div>
+        <div id="templateloop">
+          <h2>TemplateLoop</h2>
+          <p>
+            As a language construct, TemplateParser has an understanding of iteration. 
+            The <code>TemplateLoop</code> can be compared to the Python <code>for</code>-loop, 
+            or the <code>foreach</code> construct in other languages (lazy iteration over the values of an iterable).
+          </p>
+          <p>
+            Setting up the parser and registering our tag function
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; template = <span class="string"><span class="delimiter">'</span><span class="content">The first element of list: [elements|first].</span><span class="delimiter">'</span></span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; parser.ParseString(template, elements=[<span class="string"><span class="delimiter">'</span><span class="content">Eric</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Michael</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">John</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Terry</span><span class="delimiter">'</span></span>])
+<span class="line-numbers">3</span><span class="string"><span class="delimiter">'</span><span class="content">The first element of list: Eric.</span><span class="delimiter">'</span></span>
+</span></code></pre>
+        </div>
+        <div id="syntax_and_properties">
+          <h3>Syntax and properties</h3>
+          <strong>Syntax: <code>&#123;&#123; for local_var in [collection]&#125;&#125;</code></strong>
+          <ul>
+            <li>The double accolades (curly braces) indicate the beginning and end of the construct;</li>
+              <li>The <code>for</code> keyword indicates the structure to execute;</li>
+              <li><code>local_var</code> is the name which references the loop variable;</li>
+              <li><code>[collection]</code> is the tag that provides the iteratable.</li>
+            </ul>
+          <strong>Properties</strong>
+          <ul>
+            <li>The local name is stated without brackets (as it's no tag itself)</li>
+              <li>When it needs to be placed in the output, the local name should have brackets (like any other tag)</li>
+              <li><strong>N.B.</strong> The local variable does <em>not</em> bleed into the outer scope after the loop has completed.<br> 
+                It is therefore possible (though not recommended) to name the loop variable after the iterable: <code>&#123;&#123; for collection in [collection] &#125;&#125;</code>.</li>
+            </ul>
+        </div>
+        <div id="example_of_a_templateloop">
+          <h3>Example of a TemplateLoop</h3>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 2</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 3</span>    <span class="tag">&lt;ul&gt;</span>
+<span class="line-numbers"> 4</span>    &#123;&#123; for name in [presidents] &#125;&#125;
+<span class="line-numbers"> 5</span>      <span class="tag">&lt;li&gt;</span>President [name]<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers"> 6</span>    &#123;&#123; endfor &#125;&#125;
+<span class="line-numbers"> 7</span>    <span class="tag">&lt;/ul&gt;</span>
+<span class="line-numbers"> 8</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"> 9</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">rushmore.utp</span><span class="delimiter">'</span></span>, presidents=[<span class="string"><span class="delimiter">'</span><span class="content">Washington</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Jefferson</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Roosevelt</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Lincoln</span><span class="delimiter">'</span></span>])
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 2</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 3</span>    <span class="tag">&lt;ul&gt;</span>
+<span class="line-numbers"> 4</span>      <span class="tag">&lt;li&gt;</span>President Washington<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers"> 5</span>      <span class="tag">&lt;li&gt;</span>President Jefferson<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers"> 6</span>      <span class="tag">&lt;li&gt;</span>President Roosevelt<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers"> 7</span>      <span class="tag">&lt;li&gt;</span>President Lincoln<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers"> 8</span>    <span class="tag">&lt;/ul&gt;</span>
+<span class="line-numbers"> 9</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"><strong>10</strong></span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
+        </div>
+        <div id="inlining_templates">
+          <h3>Inlining templates</h3>
+          <p>
+            Often, there will be snippets of a template that will see a lot of reuse. 
+            Page headers and footers are often the same on many pages, and having several redundant copies means that changes will have to 
+            be replicated to each of these occurrances. To reduce the need for this, 
+            TemplateParser has an <code>inline</code> statement. Using this you can specify a template that is available in the 
+            <code>[[TemplateParser#Parser]]</code> instance and the statement will be replaced by the template.
+          </p>
+          <p>
+            Of course, if the inlined template is not already in the <code>Parser</code> instance, 
+            the autoloading mechanism will trigger,
+            and the named template will be search for in the <code>Parser</code>'s template directory.
+          </p>
+          <p>
+            First, we will define our inline template, <code>'inline_hello.html'</code>:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="tag">&lt;p&gt;</span>Hello [name]<span class="tag">&lt;/p&gt;</span>
+</span></code></pre>
+          <p>Secondly, our main template, <code>'hello.utp'</code>:</p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="tag">&lt;h1&gt;</span>Greetings<span class="tag">&lt;/h1&gt;</span>
+<span class="line-numbers">2</span>&#123;&#123; inline inline_hello.utp &#125;&#125;
+</span></code></pre>
+          <p>Then we parse the template:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">hello.utp</span><span class="delimiter">'</span></span>, name=<span class="string"><span class="delimiter">'</span><span class="content">Dr John</span><span class="delimiter">'</span></span>)
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="tag">&lt;h1&gt;</span>Greetings<span class="tag">&lt;/h1&gt;</span>
+<span class="line-numbers">2</span><span class="tag">&lt;p&gt;</span>Hello Dr John<span class="tag">&lt;/p&gt;</span>
+</span></code></pre>
+        </div>
+        <div id="conditional_statements">
+          <p>
+            Often, you'll want the output of your template to be dependent on the value, presence, 
+            or boolean value of another tag. For instance, we may want a print a list of attendees to a party. 
+            We start the <code>if</code> conditional by checking the boolean value of the <code>attendees</code> tag. 
+            If this list if not-empty, we will print the attendee names, but if it's empty (or contains only a single entry), 
+            we'll tell the user in more intelligent ways than giving them a list with zero entries:
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

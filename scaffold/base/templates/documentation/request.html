@@ -33,23 +33,21 @@
     </aside>
     <div>
       <section>
-        <div id="request">
-          <h2>Request</h2>
-          <p>
-            The Request object is an abstraction of the incoming HTTP request. 
-            This allows one simple interface that is independent of the underlying server that µWeb runs on 
-            (either <a href="/docs/Standalone">Standalone</a> using BaseHTTPServer, 
-            or <a href="/docs/Apache">Apache</a> mode on <code>mod_python</code>).
-          </p>
-          <p>
-            From PageMaker methods, the request object is accessible as the 
-            <code>self.req</code> member. The request object contains all the information about the incoming request: 
-            query arguments, post data, cookies and environment data. 
-            It is also the object where you define cookies that need to be provided to the client.
-          </p>
-        </div>
+        <h1>Request</h1>
+        <p>
+          The Request object is an abstraction of the incoming HTTP request. 
+          This allows one simple interface that is independent of the underlying server that µWeb runs on 
+          (either <a href="/docs/Standalone">Standalone</a> using BaseHTTPServer, 
+          or <a href="/docs/Apache">Apache</a> mode on <code>mod_python</code>).
+        </p>
+        <p>
+          From PageMaker methods, the request object is accessible as the 
+          <code>self.req</code> member. The request object contains all the information about the incoming request: 
+          query arguments, post data, cookies and environment data. 
+          It is also the object where you define cookies that need to be provided to the client.
+        </p>
         <div id="query_arguments">
-          <h3>Query arguments</h3>
+          <h2>Query arguments</h2>
           <p>
             All query arguments provided by the client are present on the request object. 
             They are also accessible directly on the <a href="/documentation/PageMaker">PageMaker</a> object. 
@@ -104,7 +102,7 @@
           </p>
         </div>
         <div id="post_data">
-          <h3>Post data</h3>
+          <h2>Post data</h2>
           <p>
             Submitted form data is available on the request object as well. 
             The interface is similar to that of the query arguments, 
@@ -153,7 +151,7 @@
 </span></code></pre>
         </div>
         <div id="uploading_files">
-          <h3>Uploading files</h3>
+          <h2>Uploading files</h2>
           <p>
             Processing an uploaded file is done using the the same <code>FieldStorage</code> 
             system as the rest of the POST data, and roughly looks like the following. 
@@ -182,8 +180,8 @@
 <span class="line-numbers">12</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">Your avatar has been replaced by %r</span><span class="delimiter">'</span></span> % avatar_name
 </span></code></pre>
         </div>
-        <div id="structued_data_using_post">
-          <h3>Structured data using POST</h3>
+        <div id="structured_data_using_post">
+          <h2>Structured data using POST</h2>
           <p>One of the things that has been extended on the basic <code>FieldStorage</code> 
             in µWeb is the way it treats square backets ( [ and ] ) in POST data. A form field with the name 
             <code>person[name]</code> will result in a dictionary 
@@ -220,9 +218,9 @@
             the last-set value will be the one present in the dictionary.
           </p>
         </div>
-        <h2>Cookies</h2>
+        <h1>Cookies</h1>
         <div id="reading_cookies">
-          <h3>Reading cookies</h3>
+          <h2>Reading cookies</h2>
           <p>
             Cookies provided by the client will also end up in the request object. 
             They are both present on the request itself, as <code>self.req.vars['cookies']</code>, 
@@ -236,7 +234,7 @@
           <p>Cookies cannot be set by using this dictionary though, for that the <code>AddCookie</code> method is required.</p>
         </div>
         <div id="setting_cookies">
-          <h3>Setting cookies</h3>
+          <h2>Setting cookies</h2>
           <p>
             Response cookies are set using the request object.
             The method to use for this is <code>AddCookie</code>, 
@@ -298,9 +296,9 @@
 <span class="line-numbers">44</span>  <span class="predefined-constant">self</span>.req.AddCookie(<span class="string"><span class="delimiter">'</span><span class="content">session</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">SMqfUYLk3vCjkWL6</span><span class="delimiter">'</span></span>, domain=<span class="string"><span class="delimiter">'</span><span class="content">.example.com</span><span class="delimiter">'</span></span>)
 </span></code></pre>
         </div>
-        <h2>Headers</h2>
+        <h1>Headers</h1>
         <div id="incoming_headers">
-          <h3>Incoming headers</h3>
+          <h2>Incoming headers</h2>
           <p>
             Request headers are made available in the <code>headers</code> member of the request object. 
             This works like a regular dictionary (though writing to this dictionary is not guaranteed to be successful), 
@@ -319,7 +317,7 @@
 </span></code></pre>
         </div>
         <div id="outgoing_headers">
-          <h3>Outgoing headers</h3>
+          <h2>Outgoing headers</h2>
           <p>
             <strong>While it is possible to provide response headers via the <code>Request</code> object, 
               it is strongly advised to provide them using the <a href="/documentation/response">Response</a> object. 
@@ -344,7 +342,7 @@
           </p>
         </div>
         <div id="content_type">
-          <h4>Content-type</h4>
+          <h3>Content-type</h3>
           <p>
             The content-type of the reply would usually be configured by returning a custom 
             <a href="/documentation/response">Response</a> object. 
@@ -364,7 +362,7 @@
             </p>
         </div>
         <div id="http_response_code">
-          <h4>HTTP Response code</h4>
+          <h3>HTTP Response code</h3>
           <p>
             The HTTP response code on the webserver reply can also be set directly on the 
             <code>request</code> object when a full <code>Response</code> object is for any reason not desirable:
@@ -448,7 +446,7 @@
           </tbody></table>
         </div>
         <div id="extended_environment">
-          <h3>Extended enviornment</h3>
+          <h2>Extended enviornment</h2>
           <p>
             If more information is required, the environment dictionary can be extended with a number of additional points of information. 
             This can be done by calling the <code>ExtendedEnvironment</code> method. This will expand the environment dictionary, 

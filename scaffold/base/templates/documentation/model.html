@@ -34,7 +34,7 @@
     <div>
       <section>
         <div id="model">
-          <h2>Model</h2>
+          <h1>Model</h1>
           <p>
             The µWeb framework provides a model module with the intention of simplifying database access. The design goal is to provide a rich abstraction that 
           </p>
@@ -57,7 +57,7 @@
           </p>
         </div>
         <div id="your_first_record_class">
-          <h3>Your first Record class</h3>
+          <h2>Your first Record class</h2>
           <p>
             To create your own Record subclass, nothing is required beyond the class' name. The following example substitutes a complete working example:
           </p>
@@ -67,7 +67,7 @@
 </span></code></pre>
         </div>
         <div id="loading_fields_from_primary_key">
-          <h3>Loading fields from primary key</h3>
+          <h2>Loading fields from primary key</h2>
           <p>
             The Record class comes loaded with a way to load records from your database using the FromPrimary method. 
             This is a classmethod available on the Record class and all your own subclasses, and when given a connection and primary key value, 
@@ -95,7 +95,7 @@
 </span></code></pre>
         </div>
         <div id="changing_the_primary_key_field">
-          <h3>Changing the primary key field</h3>
+          <h2>Changing the primary key field</h2>
           <p>
             By default, Record uses a primary key called 'ID'. You can change this to any value you like,
             and FromPrimary will automatically work based on that value, and all other methods and functionality of 
@@ -115,7 +115,7 @@
 </span></code></pre>
         </div>
         <div id="compound_primary_keys">
-          <h3>Compound primary keys</h3>
+          <h2>Compound primary keys</h2>
           <p>
             The µWeb model also supports compound primary keys, with one limitation: AUTO_INCREMENT fields 
             are not supported for creation of the Record, all values need to be provided for it.
@@ -139,7 +139,7 @@
 </span></code></pre>
         </div>
         <div id="class_and_table_relation">
-          <h3>Class and table relation</h3>
+          <h2>Class and table relation</h2>
           <p>
             By default, the assumption is made that the table name is the same as the class name, 
             with the first letter lowercase. <strong>The table related to the class 
@@ -155,7 +155,7 @@
 </span></code></pre>
         </div>
         <div id="creating_records">
-          <h3>Creating records</h3>
+          <h2>Creating records</h2>
           <p>
             To create a record in the database, you can use the classmethod Create. 
             This takes the connection and a dictionary of the keys and values that should be inserted into the database. 
@@ -170,7 +170,7 @@
             That is, the record will not be reloaded after storing. The primary</p>
         </div>
         <div id="deleting_records">
-          <h3>Deleting records</h3>
+          <h2>Deleting records</h2>
           <p>
             Records can be deleted from the database either from a loaded object, or using the DeletePrimary classmethod. 
             This latter removes the record from the database using the primary key to select it.
@@ -187,7 +187,7 @@
 </span></code></pre>
         </div>
         <div id="listing_all_records">
-          <h3>Listing all records</h3>
+          <h2>Listing all records</h2>
           <p>
             For situations where all records must be retrieved or processed, there is the List classmethod. 
             This takes the connection as argument and iterates over all records in the database:
@@ -205,7 +205,7 @@
 </span></code></pre>
         </div>
         <div id="on_demand_loading_of_referenced_records">
-          <h3>On-demand loading of referenced records</h3>
+          <h2>On-demand loading of referenced records</h2>
           <p>In databases that are more complex than a single table (nearly ''all''), information is often normalized. 
             That is, the author information in our previously demonstrated <strong>message</strong> 
             table will be stored in a separate <strong>author</strong> table. 
@@ -294,7 +294,7 @@
 </span></code></pre>
         </div>
         <div id="loading_child_objects_1_to_n">
-          <h3>Loading child objects (1-to-n relations)</h3>
+          <h2>Loading child objects (1-to-n relations)</h2>
           <p>
             The model provides a generic method to retrieve child records (that is, <em>1 to n</em> relations) of a record. 
             The desired relations <em>should</em> have an associated Record class. 
@@ -355,7 +355,7 @@
 </span></code></pre>
         </div>
         <div id="updating_a_record">
-          <h3>Updating a record</h3>
+          <h2>Updating a record</h2>
           <p>
             After loading a record, it can be altered, and saved. 
             These changes (and optionally changes to nested records), 
@@ -386,8 +386,8 @@
           </p>
         </div>
         <div id="comparisons">
-          <h3>comparisons</h3>
-          <h4>Equality</h4>
+          <h2>comparisons</h2>
+          <h3>Equality</h3>
           <p>Records must pass the following criteria to be considered equal to one another:</p>
           <ol>
             <li><strong>Type</strong>: Two objects must be of the same type (class)</li>
@@ -395,7 +395,7 @@
             <li><strong>Foreign relations</strong>: Foreign relations must be the same. If these are not resolved in one object but are in the other, the primary key of the resolved object will be compared to the data of the other record.</li>
             <li><strong>Data</strong>: All remaining data fields must be equal and symmetric (i.e. both objects describe the same fields)</li>
           </ol>
-          <h4>Greater / smaller</h4>
+          <h3>Greater / smaller</h3>
           <p>
             Comparing two objects with one another to tell their relative order can only be done if they are of the same type. 
             If they are, the comparison is done based on the primary key values of the records. 

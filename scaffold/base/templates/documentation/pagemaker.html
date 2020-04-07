@@ -33,7 +33,7 @@
     </aside>
     <div>
       <section>
-        <h2>PageMaker</h2>
+        <h1>PageMaker</h1>
         <p>
           PageMaker is the Controller of the MVC approach in µWeb. 
           After a request is received by the web server and wrapped inside a Request object, it is routed here to be answered.
@@ -43,7 +43,7 @@
         </p>
 
         <div id="minimal_pagemaker">
-          <h3>A very minimal PageMaker</h3>
+          <h2>A very minimal PageMaker</h2>
           <p>
             In the simplest form, a PageMaker for a project subclasses from µWeb's default PageMaker class and provides its own methods to handle requests. 
             The full source for this would look something like this:
@@ -64,7 +64,7 @@
         </div>
 
         <div id="debugging_pagemaker">
-          <h3>DebuggingPageMaker</h3>
+          <h2>DebuggingPageMaker</h2>
           <p>
             Before we do anything else, during development you are strongly advised to use µWeb's DebuggingPageMaker. 
             This has a lot of additional features for when something goes wrong on the server side. 
@@ -88,7 +88,7 @@
         </div>
 
         <div id="pagemaker_templateparser">
-          <h3>Templateparser</h3>
+          <h2>Templateparser</h2>
           <p>
             The µWeb TemplateParser is available on the standard PageMaker instance. When using PageMaker, 
             an instantiated TemplateParser instance is available through the parser member of PageMaker. 
@@ -130,7 +130,7 @@
           <p>Full documentation, with plenty of example template uses can be found on the TemplateParser wiki-entry.</p>
         </div>  
         <div id="template_directory_configuration">
-          <h3>Template directory configuration</h3>
+          <h2>Template directory configuration</h2>
           <p>
             By default, template are loaded from the 'templates' directory that is expected to be on the same path as the pagemaker module. 
             If your pagemaker is located on /var/www/uweb_project/project.py, then templates will be automatically loaded from /var/www/uweb_project/templates/.
