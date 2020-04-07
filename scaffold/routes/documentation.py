@@ -32,6 +32,8 @@ class PageMaker(uweb3.DebuggingPageMaker):
     return self.parser.Parse('documentation/routing.html')
 
   #BETA
+  def Beta(self):
+    return self.parser.Parse('documentation/beta/index.html')
 
   def HotReloading(self):
     return self.parser.Parse('documentation/beta/hot_reload.html')

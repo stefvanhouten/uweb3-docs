@@ -38,6 +38,7 @@ def main():
       ('/documentation/request', 'DocRequest'),
       ('/documentation/response', 'DocResponse'),
       #BETA
+      ('/documentation/beta', 'Beta'),
       ('/documentation/beta/hotreloading', 'HotReloading'),
       ('/documentation/beta/sqlalchemy', 'SqlAlchemy'),
       ('/documentation/beta/route_detection', 'RouteDetection'),
