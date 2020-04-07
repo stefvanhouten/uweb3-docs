@@ -36,6 +36,7 @@ def main():
       ('/documentation/model', 'DocModel'),
       ('/documentation/templateparser', 'DocTemplateParser'),
       ('/documentation/request', 'DocRequest'),
+      ('/documentation/response', 'DocResponse'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
       ]

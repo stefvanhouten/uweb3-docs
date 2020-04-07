@@ -61,10 +61,10 @@
 <pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">import</span> <span class="include">uweb</span>
 <span class="line-numbers">2</span><span class="keyword">import</span> <span class="include">time</span>
 <span class="line-numbers">3</span>
-<span class="line-numbers">4</span><span class="keyword">class</span> <span class="class">PageMaker</span>(uweb.PageMaker):
+<span class="line-numbers">4</span><span class="keyword">class</span> <span class="class">PageMaker</span>(uweb3.PageMaker):
 <span class="line-numbers">5</span>  <span class="keyword">def</span> <span class="function">VersionPage</span>(<span class="predefined-constant">self</span>):
 <span class="line-numbers">6</span>    <span class="keyword">return</span> <span class="predefined-constant">self</span>.parser.Parse(
-<span class="line-numbers">7</span>      <span class="string"><span class="delimiter">'</span><span class="content">version.html</span><span class="delimiter">'</span></span>, year=time.strftime(<span class="string"><span class="delimiter">'</span><span class="content">%Y</span><span class="delimiter">'</span></span>), version=uweb.__version__)
+<span class="line-numbers">7</span>      <span class="string"><span class="delimiter">'</span><span class="content">version.html</span><span class="delimiter">'</span></span>, year=time.strftime(<span class="string"><span class="delimiter">'</span><span class="content">%Y</span><span class="delimiter">'</span></span>), version=uweb3.__version__)
 </span></code></pre>
           <p>The example template for the above file could look something like this:</p>
 <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -184,7 +184,7 @@
 <span class="line-numbers"> 7</span>    <span class="predefined-constant">self</span>.AddTemplate(template)
 <span class="line-numbers"> 8</span>  File <span class="string"><span class="delimiter">"</span><span class="content">/var/lib/underdark/libs/uweb/templateparser.py</span><span class="delimiter">"</span></span>, line <span class="integer">171</span>, <span class="keyword">in</span> AddTemplate
 <span class="line-numbers"> 9</span>    <span class="keyword">raise</span> TemplateReadError(<span class="string"><span class="delimiter">'</span><span class="content">Could not load template %r</span><span class="delimiter">'</span></span> % template_path)
-<span class="line-numbers"><strong>10</strong></span>underdark.libs.uweb.templateparser.TemplateReadError: Could <span class="keyword">not</span> load template <span class="string"><span class="delimiter">'</span><span class="content">templates/bad_template.html</span><span class="delimiter">'</span></span>
+<span class="line-numbers"><strong>10</strong></span>underdark.libs.uweb3.templateparser.TemplateReadError: Could <span class="keyword">not</span> load template <span class="string"><span class="delimiter">'</span><span class="content">templates/bad_template.html</span><span class="delimiter">'</span></span>
 </span></code></pre>
         </div>
         <div id="parse_and_parsestring_methods">
@@ -243,7 +243,7 @@
 <span class="line-numbers">12</span>  <span class="tag">&lt;/body&gt;</span>
 <span class="line-numbers">13</span><span class="tag">&lt;/html&gt;</span>
 </span></code></pre>
-<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">version.html</span><span class="delimiter">'</span></span>, year=time.strftime(<span class="string"><span class="delimiter">'</span><span class="content">%Y</span><span class="delimiter">'</span></span>), version=uweb.__version__)
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">version.html</span><span class="delimiter">'</span></span>, year=time.strftime(<span class="string"><span class="delimiter">'</span><span class="content">%Y</span><span class="delimiter">'</span></span>), version=uweb3.__version__)
 </span></code></pre>
 <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>

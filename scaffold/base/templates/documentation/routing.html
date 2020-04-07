@@ -33,7 +33,7 @@
     </aside>
     <div>
       <section>
-        <h1>Routing</h1>
+        <h1>Request Router</h1>
         <div id="routing_explained">
           <h2>Routing explained [outdated]</h2>
           <p>
@@ -74,14 +74,14 @@
               Firstly, we import the uweb package, since we need that to configure the webserver from
             </li>
             <li>
-              Secondly, we import the module where the class with our handling methods is defined (the uweb.uweb_info.pages module).
+              Secondly, we import the module where the class with our handling methods is defined (the uweb3.uweb_info.pages module).
             </li>
             <li>
               PAGE_CLASS is the global that holds a reference to the PageMaker subclass for your project, from where requests are handled.
               ROUTES is the global that defines the various requests that the router understands, and directs them to the (named) method of the PAGE_CLASS.
             </li>
             <li>
-              Finally, uweb.ServerSetup() starts the webserver for those cases where it runs StandAlone (and does some initial setting up for when it runs using Apache)
+              Finally, uweb3.ServerSetup() starts the webserver for those cases where it runs StandAlone (and does some initial setting up for when it runs using Apache)
             </li>
           </ul>
         </div>

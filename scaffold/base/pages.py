@@ -11,7 +11,7 @@ class PageMaker(uweb3.DebuggingPageMaker):
     return self.parser.Parse('index.html')
   
   def Uweb(self):
-    return self.parser.Parse("uWeb.html")
+    return self.parser.Parse("uweb3.html")
   
   def Download(self):
     return self.parser.Parse('download.html')

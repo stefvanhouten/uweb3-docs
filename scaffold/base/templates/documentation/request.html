@@ -197,7 +197,7 @@
 <span class="line-numbers">8</span>...</span></code></pre>
 <pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">PersonalData</span>(<span class="predefined-constant">self</span>):
 <span class="line-numbers">2</span>  person = <span class="predefined-constant">self</span>.post.getfirst(<span class="string"><span class="delimiter">'</span><span class="content">person</span><span class="delimiter">'</span></span>)
-<span class="line-numbers">3</span>  <span class="keyword">return</span> uweb.Response(json.dumps(person), content_type=<span class="string"><span class="delimiter">"</span><span class="content">application/json</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">3</span>  <span class="keyword">return</span> uweb3.Response(json.dumps(person), content_type=<span class="string"><span class="delimiter">"</span><span class="content">application/json</span><span class="delimiter">"</span></span>)
 </span></code></pre>
           <p>
             In the above code here, the <code>person</code> variable is a dictionary retrieved from the POST data, 

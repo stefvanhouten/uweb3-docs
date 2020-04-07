@@ -25,6 +25,8 @@ class PageMaker(uweb3.DebuggingPageMaker):
   def DocRequest(self):
     return self.parser.Parse('documentation/request.html')
 
+  def DocResponse(self):
+    return self.parser.Parse('documentation/response.html')
 
   def Routing(self):
     return self.parser.Parse('documentation/routing.html')

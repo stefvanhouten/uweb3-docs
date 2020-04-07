@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <h1>Response</h1>
+        <p>
+          HTTP requests can be answered in one of two ways in uweb3. The first, 
+          and simplest method is to simply issue a <code>return</code> statement in the <strong>
+          <a href="/documentation/pagemaker">PageMaker</a></strong> and provide a string (or any object that can be reduced to a string). 
+          This will create a response to the client with a <strong>HTTP status code 200 OK</strong>, 
+          and the body of the reply will be the returned string.
+        </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">SimplePage</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">"""</span><span class="content">&lt;!DOCTYPE html&gt;</span><span class="content"></span></span>
+<span class="line-numbers">3</span><span class="string"><span class="content"></span><span class="content">    &lt;html&gt;</span><span class="content"></span></span>
+<span class="line-numbers">4</span><span class="string"><span class="content"></span><span class="content">      &lt;head&gt;&lt;title&gt;My website&lt;/title&gt;&lt;/head&gt;</span><span class="content"></span></span>
+<span class="line-numbers">5</span><span class="string"><span class="content"></span><span class="content">      &lt;body&gt;&lt;h1&gt;Hello world&lt;/h1&gt;&lt;/body&gt;</span><span class="content"></span></span>
+<span class="line-numbers">6</span><span class="string"><span class="content"></span><span class="content">    &lt;/html&gt;</span><span class="delimiter">"""</span></span>
+</span></code></pre>
+        <p>This returns a minimal document to the client. Also, the default content-type will be used, and provided in the outgoing headers: <strong>text/html</strong>.</p>
+        <p>
+          <strong>N.B.</strong>: Like all code examples on this page, 
+          this example assumes that the defined function is part of a PageMaker class, 
+          and that the uweb package itself has been imported under its default name.
+        </p>
+        <p>
+          If you need to change any of these, for instance setting a cookie, another content-type, 
+          or different HTTP status codes, you will need to use the <code>Response</code> class. 
+          The following sections will explain how to use the Response class in various situations.
+        </p>
+        <div id="different_http_status_code">
+          <h2>Different HTTP status code</h2>
+          <p>
+            Returning a "Not Found" page, or even a "Internal Server Error" page is never fun,
+            but they are two of many situations where you will want to serve content with a different HTTP status code. 
+            This is easily done using the <code>Response</code> class:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">FourOhFour</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="keyword">return</span> uweb3.Response(<span class="string"><span class="delimiter">'</span><span class="content">Unfortunately, we could not locate your document</span><span class="delimiter">'</span></span>, httpcode=<span class="integer">404</span>)
+</span></code></pre>
+          <p>A more verbose example, that also shows you how you would use the 
+            <strong><a href="/documentation/templateparser">TemplateParser</a></strong>, 
+            could look like like follows. In this example, we grab the receive the requested path as argument from the 
+            <strong><a href="/documentation/routing">Request Router</a></strong>, and we pass this into a template:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">FourOhFour</span>(<span class="predefined-constant">self</span>, path):
+<span class="line-numbers">2</span>  <span class="keyword">return</span> uweb3.Response(<span class="predefined-constant">self</span>.parser(<span class="string"><span class="delimiter">'</span><span class="content">404.utp</span><span class="delimiter">'</span></span>, path=path), httpcode=<span class="integer">404</span>)
+</span></code></pre>
+        </div>
+        <div id="different_content_type">
+          <h2>Different content-type</h2>
+          <p>
+            There are also many situations where our response is not HTML. 
+            For instance, if you're developing rich applications with a lot of Javascript interaction, 
+            you will likely be answering requests using JSON. The final steps of your response would look like this:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">JsonResponse</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="keyword">return</span> uweb3.Response(json.dumps({<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">µWeb</span><span class="delimiter">'</span></span>}),
+<span class="line-numbers">3</span>                       content_type=<span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>)
+</span></code></pre>
+        </div>
+        <div id="adding_custom_headers">
+          <h2>Adding custom headers</h2>
+          <p>
+            Adding to our previous example, if we want our JSON response to be usable cross-domain, 
+            we need to provide the correct allow-origin controls. These require a header mention, 
+            and can be added directly into the <code>Response</code> object. Headers can be added by 
+            providing a dictionary with the header names and corresponding values.
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">JsonGlobalResponse</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="keyword">return</span> uweb3.Response(json.dumps({<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">µWeb</span><span class="delimiter">'</span></span>}),
+<span class="line-numbers">3</span>                       content_type=<span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>,
+<span class="line-numbers">4</span>                       headers={<span class="string"><span class="delimiter">'</span><span class="content">Access-Control-Allow-Origin</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">*</span><span class="delimiter">'</span></span>,
+<span class="line-numbers">5</span>                                <span class="string"><span class="delimiter">'</span><span class="content">Cache-Control</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">no-cache, must-revalidate</span><span class="delimiter">'</span></span>})
+</span></code></pre>
+          <p>
+            <strong>N.B.:</strong> 
+            Cookies should be set using the <strong><a href="/documentation/request">Request</a>
+            </strong> object's <code>AddCookie</code> method, and not using the headers of the 
+            <code>Response</code> object. Redirects can generally more easily be created using the 
+            <code>Redirect</code> class explained below.
+          </p>
+        </div>
+        <div id="redirect">
+          <h1>Redirect</h1>
+          <p>
+            For redirects, there is a convenience class present in uweb3. 
+            This is a subclass of <code>Response</code> that only requires a new location, 
+            and optionally a HTTP status code. If the status code is not provided, 
+            it will default to <strong>307 (Temporary Redirect)</strong>:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">return</span> uweb3.req.Redirect(<span class="string"><span class="delimiter">'</span><span class="content">http://underdark.nl</span><span class="delimiter">'</span></span>)
+</span></code></pre>
+          <p>To create a permanent redirect, simply provide the associated <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes" class="external">status code</a>:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">return</span> uweb3.req.Redirect(<span class="string"><span class="delimiter">'</span><span class="content">http://bugs.underdark.nl/docs/Response</span><span class="delimiter">'</span></span>, httpcode=<span class="integer">301</span>)
+</span></code></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
