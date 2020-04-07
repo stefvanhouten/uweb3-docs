@@ -19,6 +19,7 @@ a {
   color: hsl(208, 56%, 46%);
   -webkit-transition: color .2s;
   transition: color .2s;
+  text-decoration: none;
 }
 /* a:not(:hover) {
   text-decoration: none;
@@ -203,4 +204,49 @@ nav.pagination > ol > li.next > a::before {
 }
 nav.pagination > ol > li.last > a::before {
   content: url('data:image/svg+xml,<svg fill="%23347ab7" viewBox="-2 -3 4 6" xmlns="http://www.w3.org/2000/svg"><polygon points="0.5 0, -1.5 -1.5, -1.5 1.5"/><rect x="0.5" y="-1.5" width="1" height="3"/></svg>');
+}
+
+.syntaxhl .line-numbers {
+  -moz-user-select: none;
+  background-color: #EEEEEE;
+  margin: 0 5px 0 0;
+  padding: 2px 4px;
+}
+.syntaxhl .comment {
+  color: #777777;
+}
+.syntaxhl .include {
+  color: #BB4444;
+  font-weight: bold;
+}
+.syntaxhl .keyword {
+  color: #008800;
+  font-weight: bold;
+}
+.syntaxhl .class {
+  color: #BB0066;
+  font-weight: bold;
+}
+.syntaxhl .string .content {
+  color: #DD2200;
+}
+.syntaxhl .predefined-constant {
+  color: #006699;
+}
+code .content {
+  width: auto;
+  margin-left: auto;
+  left: 0;
+  position: static;
+  padding: 0;
+  background: none;
+  border: 0;
+  clear: none;
+  display: inline;
+}
+.syntaxhl .doctype {
+  color: #3344BB;
+}
+.syntaxhl .tag {
+  color: #007700;
 }

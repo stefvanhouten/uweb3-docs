@@ -48,22 +48,19 @@
             In the simplest form, a PageMaker for a project subclasses from µWeb's default PageMaker class and provides its own methods to handle requests. 
             The full source for this would look something like this:
           </p>
-          <pre>
-            <code>
-              #!/usr/bin/python
-              """PageMaker demonstration module"""
-
-              # uWeb framework
-              import uweb3
-
-              class Minimalist(uweb3.PageMaker):
-                def Index(self):
-                  return 'Welcome to our website, it is still very much under construction.'
-
-                def Catchall(self, path):
-                  return 'The requested page %r does not exist yet' % path
-            </code>
-          </pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="comment">#!/usr/bin/python</span>
+<span class="line-numbers"> 2</span><span class="comment"><span class="delimiter">"""</span><span class="content">PageMaker demonstration module</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span><span class="comment"># uWeb framework</span>
+<span class="line-numbers"> 5</span><span class="keyword">import</span> <span class="include">uweb3</span>
+<span class="line-numbers"> 6</span>
+<span class="line-numbers"> 7</span><span class="keyword">class</span> <span class="class">Minimalist</span>(uweb3.PageMaker):
+<span class="line-numbers"> 8</span>  <span class="keyword">def</span> <span class="function">Index</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers"> 9</span>    <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">Welcome to our website, it is still very much under construction.</span><span class="delimiter">'</span></span>
+<span class="line-numbers"><strong>10</strong></span>
+<span class="line-numbers">11</span>  <span class="keyword">def</span> <span class="function">Catchall</span>(<span class="predefined-constant">self</span>, path):
+<span class="line-numbers">12</span>    <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">The requested page %r does not exist yet</span><span class="delimiter">'</span></span> % path
+</span></code></pre>
         </div>
 
         <div id="debugging_pagemaker">
@@ -97,46 +94,39 @@
             an instantiated TemplateParser instance is available through the parser member of PageMaker. 
             Basic usage looks like this:
           </p>
-          <pre>
-            <code>
-              import uweb3
-              import time
-
-              class TemplateDemo(uweb3.PageMaker):
-                def VersionPage(self):
-                  return self.parser.Parse(
-                    'version.utp', year=time.strftime('%Y'), version=uweb.__version__)
-            </code>
-          </pre>
-
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb version info<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>    <span class="tag">&lt;p&gt;</span>µWeb version [version] - Copyright 2010-[year] Underdark<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers"> 8</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"> 9</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
           <p>The example template for the above file could look something like this:</p>
-          <pre>
-            <code>
-              &lt;!DOCTYPE html&gt;
-              &lt;html&gt;
-              &lt;head&gt;
-              &lt;title&gt;µWeb version info&lt;/title&gt;
-              &lt;/head&gt;
-              &lt;body&gt;
-              &lt;p&gt;µWeb version [version] - Copyright 2010-[year] Underdark&lt;/p&gt;
-              &lt;/body&gt;
-              &lt;/html&gt;
-            </code>
-          </pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb version info<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>    <span class="tag">&lt;p&gt;</span>µWeb version 0.12 - Copyright 2010-2012 Underdark<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers"> 8</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"> 9</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
           <p>And would result in the following output:</p>
-          <pre>
-            <code>
-              &lt;!DOCTYPE html&gt;
-              &lt;html&gt;
-              &lt;head&gt;
-              &lt;title&gt;µWeb version info&lt;/title&gt;
-              &lt;/head&gt;
-              &lt;body&gt;
-              &lt;p&gt;µWeb version 0.12 - Copyright 2010-2012 Underdark&lt;/p&gt;
-              &lt;/body&gt;
-              &lt;/html&gt;
-            </code>
-          </pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb version info<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>    <span class="tag">&lt;p&gt;</span>µWeb version 0.12 - Copyright 2010-2012 Underdark<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers"> 8</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"> 9</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
+            
           <p>Full documentation, with plenty of example template uses can be found on the TemplateParser wiki-entry.</p>
         </div>  
         <div id="template_directory_configuration">

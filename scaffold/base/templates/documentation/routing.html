@@ -48,28 +48,25 @@
             an example of how a router would look. 
             The example given is a very stripped down version of the handler from the uweb_info example project:
           </p>
-          <pre>
-            <code>
-              import uweb
-              from uweb.uweb_info import pages
-
-              PAGE_CLASS = pages.PageMaker
-              ROUTES = (
-                  ('/static/(.*)', 'Static'),
-                  ('/(broken.*)', 'FourOhFour'),
-                  ('/haltandcatchfire', 'MakeFail'),
-                  ('/json', 'Json'),
-                  ('/text', 'Text'),
-                  ('/redirect/(.*)', 'Redirect'),
-                  ('/OpenIDLogin', '_OpenIdInitiate'),
-                  ('/OpenIDValidate', '_OpenIdValidate'),
-                  ('/ULF-Challenge', '_ULF_Challenge'),
-                  ('/ULF-Login', '_ULF_Verify'),
-                  ('/(.*)', 'Index'))
-
-              uweb.ServerSetup()
-            </code>
-          </pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import</span> <span class="include">uweb3</span>
+<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">uweb3.uweb_info</span> <span class="keyword">import</span> <span class="include">pages</span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span>PAGE_CLASS = pages.PageMaker
+<span class="line-numbers"> 5</span>ROUTES = (
+<span class="line-numbers"> 6</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/static/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Static</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"> 7</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/(broken.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">FourOhFour</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"> 8</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/haltandcatchfire</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">MakeFail</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"> 9</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/json</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Json</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"><strong>10</strong></span>    (<span class="string"><span class="delimiter">'</span><span class="content">/text</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Text</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">11</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/redirect/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Redirect</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">12</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/OpenIDLogin</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_OpenIdInitiate</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">13</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/OpenIDValidate</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_OpenIdValidate</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">14</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/ULF-Challenge</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_ULF_Challenge</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">15</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/ULF-Login</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_ULF_Verify</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">16</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Index</span><span class="delimiter">'</span></span>))
+<span class="line-numbers">17</span>
+<span class="line-numbers">18</span>uweb3.ServerSetup()
+</span></code></pre>
           <p>
             In the example above, the following things happen:
           </p>
@@ -102,14 +99,11 @@
           <p>
             Requesting "/user/elmer/edit/27" on the following router:
           </p>
-          <pre>
-            <code>
-              PAGE_CLASS = blog.BlogPages
-              ROUTES = (
-                  ('/user/(\w*)/edit/(\d*)', 'EditArticle'),
-                  ('/', 'Index'))
-            </code>
-          </pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>PAGE_CLASS = blog.BlogPages
+<span class="line-numbers">2</span>ROUTES = (
+<span class="line-numbers">3</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/user/(</span><span class="content">\w</span><span class="content">*)/edit/(</span><span class="content">\d</span><span class="content">*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">EditArticle</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">4</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Index</span><span class="delimiter">'</span></span>))
+</span></code></pre>
           <p>
             Will end up calling the method blog.BlogPages.EditArticle with the arguments ('Elmer', '27'). 
             Note that all arguments are provided as strings, type-conversion is left to the developer.
