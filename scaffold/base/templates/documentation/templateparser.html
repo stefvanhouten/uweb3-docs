@@ -500,7 +500,7 @@
 </span></code></pre>
         </div>
         <div id="inlining_templates">
-          <h3>Inlining templates</h3>
+          <h2>Inlining templates</h2>
           <p>
             Often, there will be snippets of a template that will see a lot of reuse. 
             Page headers and footers are often the same on many pages, and having several redundant copies means that changes will have to 
@@ -530,6 +530,7 @@
 </span></code></pre>
         </div>
         <div id="conditional_statements">
+          <h2>Conditional statements</h2>
           <p>
             Often, you'll want the output of your template to be dependent on the value, presence, 
             or boolean value of another tag. For instance, we may want a print a list of attendees to a party. 
@@ -537,6 +538,64 @@
             If this list if not-empty, we will print the attendee names, but if it's empty (or contains only a single entry), 
             we'll tell the user in more intelligent ways than giving them a list with zero entries:
           </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="tag">&lt;h1&gt;</span>Party attendees<span class="tag">&lt;/h1&gt;</span>
+<span class="line-numbers"> 2</span>&#123;&#123; if len([attendees]) <span class="error">&gt;</span> 1 &#125;&#125;
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;ol&gt;</span>
+<span class="line-numbers"> 4</span>    &#123;&#123; for attendee in [attendees] &#125;&#125;
+<span class="line-numbers"> 5</span>    <span class="tag">&lt;li&gt;</span>[attendee:name]<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers"> 6</span>    &#123;&#123; endfor &#125;&#125;
+<span class="line-numbers"> 7</span>  <span class="tag">&lt;/ol&gt;</span>
+<span class="line-numbers"> 8</span>&#123;&#123; elif [attendees] &#125;&#125;
+<span class="line-numbers"> 9</span>  <span class="tag">&lt;p&gt;</span>only [attendees:0:name] is attending.<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers"><strong>10</strong></span>&#123;&#123; else &#125;&#125;
+<span class="line-numbers">11</span>  <span class="tag">&lt;p&gt;</span>There are no registered attendees yet.<span class="tag">&lt;/p&gt;</span>
+<span class="line-numbers">12</span>&#123;&#123; endif &#125;&#125;
+</span></code></pre>
+          <p>For the case where there are several attendees:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">party.utp</span><span class="delimiter">'</span></span>, attendees=[
+<span class="line-numbers">2</span>...    {<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Livingstone</span><span class="delimiter">'</span></span>},
+<span class="line-numbers">3</span>...    {<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Cook</span><span class="delimiter">'</span></span>},
+<span class="line-numbers">4</span>...    {<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Drake</span><span class="delimiter">'</span></span>}])
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="tag">&lt;h1&gt;</span>Party attendees<span class="tag">&lt;/h1&gt;</span>
+<span class="line-numbers">2</span><span class="tag">&lt;ol&gt;</span>
+<span class="line-numbers">3</span>  <span class="tag">&lt;li&gt;</span>Livingstone<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers">4</span>  <span class="tag">&lt;li&gt;</span>Cook<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers">5</span>  <span class="tag">&lt;li&gt;</span>Drake<span class="tag">&lt;/li&gt;</span>
+<span class="line-numbers">6</span><span class="tag">&lt;/ol&gt;</span>
+</span></code></pre>
+          <p>For the case where there is one attendee:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; parser.Parse(<span class="string"><span class="delimiter">'</span><span class="content">party.utp</span><span class="delimiter">'</span></span>, attendees=[{<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Johnny</span><span class="delimiter">'</span></span>}])
+</span></code></pre>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="tag">&lt;h1&gt;</span>Party attendees<span class="tag">&lt;/h1&gt;</span>
+<span class="line-numbers">2</span><span class="tag">&lt;p&gt;</span>Only Johnny is attending.<span class="tag">&lt;/p&gt;</span>
+</span></code></pre>
+          <p>And in the case where there are no attendees:</p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="tag">&lt;h1&gt;</span>Party attendees<span class="tag">&lt;/h1&gt;</span>
+<span class="line-numbers">2</span><span class="tag">&lt;p&gt;</span>There are no registered attendees yet.<span class="tag">&lt;/p&gt;</span>
+</span></code></pre>
+        </div>
+        <div id="properties_of_conditional_statements">
+          <h3>Properties of conditional statements</h3>
+          <ul>
+            <li><strong>All template keys must be referenced as proper tag</strong><br> This is to prevent mixing of the template variables with the functions and reserved names of Python itself. Conditional expressions are evaluated using <code>eval()</code>, and proper tags are replaced by temporary names, the values of which are stored in a retrieve-on-demand dictionary. This makes them perfectly safe with regard to the value of template replacements, but some care should be taken with the writing of the conditional expressions.</li>
+              <li><strong>It is possible to index tags in conditional statements</strong><br> This allows for decisions based on the values in those indexes/keys. For instance, <code>Person</code> objects can be checked for gender, so that the correct gender-based icon can be displayed next to them.</li>
+              <li><strong>Referencing a tag or index that doesn't exist raises @TemplateNameError</strong><br> Unlike in regular template text, there is no suitable fallback value for a tag or index that cannot be retrieved. However, in most cases this can be prevented by making use of the following property:</li>
+              <li><strong>Statement evaluation is lazy</strong><br> Template conditions are processed left to right, and short-circuited where possible. If the first member of an <code>or</code> group succeeds, the return value is already known. Similarly, if the first member of an <code>and</code> group fails, the second part need not be evaluated. This way <code>TemplateNameErrors</code> can often be prevented, as in most cases, presence of indexes can be confirmed before accessing.</li>
+            </ul>
+        </div>
+        <div id="template_unicode_handling">
+          <h2>Template unicode handling</h2>
+          <p>Any <code>unicode</code> object found while parsing, will automatically be encoded to UTF-8:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>&gt;&gt;&gt; template = <span class="string"><span class="delimiter">'</span><span class="content">Underdark [love] [app]</span><span class="delimiter">'</span></span>
+<span class="line-numbers">2</span>&gt;&gt;&gt; output = parser.ParseString(template, love=<span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="char">\u2665</span><span class="delimiter">'</span></span>, app=<span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="char">\N{micro sign}</span><span class="content">Web</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>&gt;&gt;&gt; output
+<span class="line-numbers">4</span><span class="string"><span class="delimiter">'</span><span class="content">Underdark </span><span class="char">\xe2</span><span class="char">\x99</span><span class="char">\xa5</span><span class="content"> </span><span class="char">\xc2</span><span class="char">\xb5</span><span class="content">Web</span><span class="delimiter">'</span></span>  <span class="comment"># The output in its raw UTF-8 representation</span>
+<span class="line-numbers">5</span>&gt;&gt;&gt; output.decode(<span class="string"><span class="delimiter">'</span><span class="content">UTF8</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">6</span><span class="string"><span class="modifier">u</span><span class="delimiter">'</span><span class="content">Underdark </span><span class="char">\u2665</span><span class="content"> </span><span class="char">\xb5</span><span class="content">Web</span><span class="delimiter">'</span></span>           <span class="comment"># The output converted to a Unicode object</span>
+<span class="line-numbers">7</span>&gt;&gt;&gt; <span class="keyword">print</span> output
+<span class="line-numbers">8</span>Underdark <span class="error">♥</span> <span class="error">µ</span>Web                      <span class="comment"># And the printed UTF-8 as we desired it.</span>
+</span></code></pre>
         </div>
       </section>
     </div>
