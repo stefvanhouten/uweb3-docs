@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <div id="request">
+          <h2>Request</h2>
+          <p>
+            The Request object is an abstraction of the incoming HTTP request. 
+            This allows one simple interface that is independent of the underlying server that µWeb runs on 
+            (either <a href="/docs/Standalone">Standalone</a> using BaseHTTPServer, 
+            or <a href="/docs/Apache">Apache</a> mode on <code>mod_python</code>).
+          </p>
+          <p>
+            From PageMaker methods, the request object is accessible as the 
+            <code>self.req</code> member. The request object contains all the information about the incoming request: 
+            query arguments, post data, cookies and environment data. 
+            It is also the object where you define cookies that need to be provided to the client.
+          </p>
+        </div>
+        <div id="query_arguments">
+          <h3>Query arguments</h3>
+          <p>
+            All query arguments provided by the client are present on the request object. 
+            They are also accessible directly on the <a href="/documentation/PageMaker">PageMaker</a> object. 
+            The following code demonstrates both ways to access a query argument:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>...
+<span class="line-numbers">2</span><span class="tag">&lt;form&gt;</span>
+<span class="line-numbers">3</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">4</span>  <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">Tell us your name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">5</span><span class="tag">&lt;/form&gt;</span>
+<span class="line-numbers">6</span>...
+</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">NameFromQuery</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="comment"># Retrieves the 'name' argument from the request object:</span>
+<span class="line-numbers">3</span>  name = <span class="predefined-constant">self</span>.req.vars[<span class="string"><span class="delimiter">'</span><span class="content">get</span><span class="delimiter">'</span></span>].getfirst(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">4</span>
+<span class="line-numbers">5</span>  <span class="comment"># Retrieves the 'name' argument directly from the PageMaker instance (linked to the request):</span>
+<span class="line-numbers">6</span>  name = <span class="predefined-constant">self</span>.get.getfirst(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">7</span>  <span class="keyword">return</span> name
+</span></code></pre>
+          <p>
+            Using the <code>getfirst</code> method, you get a single string returned from the query argument mapping, 
+            or a <code>None</code> if no such value exists. Much like a dictionary's <code>get</code> 
+            method, you can provide a second argument to the method, and have that returned instead as the default.
+          </p>
+          <p>
+            Now, HTTP allows the client to provide the same query argument multiple times. 
+            Using <code>getfirst</code> you would only get the very first defined argument. 
+            So a request that looks like <code>http://example.org/group?name=Bob&amp;name=Mark&amp;name=Jenny</code> 
+            would only return 'Bob' in the previous example. To get all their names printed, you can use the following:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span>...
+<span class="line-numbers"> 2</span><span class="tag">&lt;form</span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">"</span><span class="content">/group</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;h2&gt;</span>Names in this group<span class="tag">&lt;/h2&gt;</span>
+<span class="line-numbers"> 4</span>  <span class="comment">&lt;!-- These would likely be generated with Javascript, but written here for demonstrative purposes --&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_1</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_1</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_2</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_2</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers"> 7</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_3</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_3</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers"> 8</span>  <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">Send these names</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers"> 9</span><span class="tag">&lt;/form&gt;</span>
+<span class="line-numbers"><strong>10</strong></span>...
+</span></code></pre>
+
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">MemberNames</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  names = <span class="predefined-constant">self</span>.get.getlist(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">, </span><span class="delimiter">'</span></span>.join(names)
+</span></code></pre>
+          <p>
+            This returns a neat comma-separated string with all the provided names. 
+            The <code>getlist</code> method does not take a default, 
+            but will instead return an empty list when there are no values for the requested argument name.
+          </p>
+        </div>
+        <div id="post_data">
+          <h3>Post data</h3>
+          <p>
+            Submitted form data is available on the request object as well. 
+            The interface is similar to that of the query arguments, 
+            and the <code>FieldStorage</code> class already present in the <code>cgi</code> module. 
+            If we take our initial example form handler, but now receive the data through HTTP POST, the code would look like this:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>...
+<span class="line-numbers">2</span><span class="tag">&lt;form</span> <span class="attribute-name">method</span>=<span class="string"><span class="delimiter">"</span><span class="content">post</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>
+<span class="line-numbers">3</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">4</span>  <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">Tell us your name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">5</span><span class="tag">&lt;/form&gt;</span>
+<span class="line-numbers">6</span>...
+</span></code></pre>
+
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">NameFromPost</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="comment"># Retrieves the 'name' value from the request object:</span>
+<span class="line-numbers">3</span>  name = <span class="predefined-constant">self</span>.req.vars[<span class="string"><span class="delimiter">'</span><span class="content">post</span><span class="delimiter">'</span></span>].getfirst(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">4</span>
+<span class="line-numbers">5</span>  <span class="comment"># Retrieves the 'name' value directly from the PageMaker instance (linked to the request):</span>
+<span class="line-numbers">6</span>  name = <span class="predefined-constant">self</span>.post.getfirst(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">7</span>  <span class="keyword">return</span> name
+</span></code></pre>
+
+          <p>
+            Like with the query arguments, <code>getfirst</code> 
+            accepts a second argument that provides a default other than <code>None</code>.
+          </p>
+          <p>
+            Multiple values are again possible in the <code>FieldStorage</code>, and these work similar to how they do in query arguments:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span>...
+<span class="line-numbers"> 2</span><span class="tag">&lt;form</span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">"</span><span class="content">/group</span><span class="delimiter">"</span></span> <span class="attribute-name">method</span>=<span class="string"><span class="delimiter">"</span><span class="content">post</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;h2&gt;</span>Names in this group<span class="tag">&lt;/h2&gt;</span>
+<span class="line-numbers"> 4</span>  <span class="comment">&lt;!-- These would likely be generated with Javascript, but written here for demonstrative purposes --&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_1</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_1</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_2</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_2</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers"> 7</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_3</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name_3</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers"> 8</span>  <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">Send these names</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers"> 9</span><span class="tag">&lt;/form&gt;</span>
+<span class="line-numbers"><strong>10</strong></span>...
+</span></code></pre>
+
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">MemberNames</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  names = <span class="predefined-constant">self</span>.post.getlist(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">, </span><span class="delimiter">'</span></span>.join(names)
+</span></code></pre>
+        </div>
+        <div id="uploading_files">
+          <h3>Uploading files</h3>
+          <p>
+            Processing an uploaded file is done using the the same <code>FieldStorage</code> 
+            system as the rest of the POST data, and roughly looks like the following. 
+            When performing file uploads, be sure to define the <code>enctype</code> of your form, 
+            or the uploaded file will have no contents.
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>...
+<span class="line-numbers">2</span><span class="tag">&lt;form</span> <span class="attribute-name">method</span>=<span class="string"><span class="delimiter">"</span><span class="content">post</span><span class="delimiter">"</span></span> <span class="attribute-name">enctype</span>=<span class="string"><span class="delimiter">"</span><span class="content">multipart/form-data</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>
+<span class="line-numbers">3</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">avatar</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Avatar: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">avatar</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">avatar</span><span class="delimiter">"</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">file</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">4</span>  <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit!</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">5</span><span class="tag">&lt;/form&gt;</span>
+<span class="line-numbers">6</span>...
+</span></code></pre>
+
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">def</span> <span class="function">UpdateAvatar</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers"> 2</span>  <span class="comment"># Retrieve the currently logged-in user</span>
+<span class="line-numbers"> 3</span>  user = <span class="predefined-constant">self</span>.GetCurrentUser()
+<span class="line-numbers"> 4</span>
+<span class="line-numbers"> 5</span>  <span class="comment"># This gets the name of the file that was uploaded</span>
+<span class="line-numbers"> 6</span>  avatar_name = <span class="predefined-constant">self</span>.post[<span class="string"><span class="delimiter">'</span><span class="content">avatar</span><span class="delimiter">'</span></span>].filename
+<span class="line-numbers"> 7</span>
+<span class="line-numbers"> 8</span>  <span class="comment"># This retrieves the content of the uploaded file, </span>
+<span class="line-numbers"> 9</span>  avatar_data = <span class="predefined-constant">self</span>.post[<span class="string"><span class="delimiter">'</span><span class="content">avatar</span><span class="delimiter">'</span></span>].value
+<span class="line-numbers"><strong>10</strong></span>
+<span class="line-numbers">11</span>  <span class="predefined-constant">self</span>.SaveAvatar(user, avatar_data)
+<span class="line-numbers">12</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">Your avatar has been replaced by %r</span><span class="delimiter">'</span></span> % avatar_name
+</span></code></pre>
+        </div>
+        <div id="structued_data_using_post">
+          <h3>Structured data using POST</h3>
+          <p>One of the things that has been extended on the basic <code>FieldStorage</code> 
+            in µWeb is the way it treats square backets ( [ and ] ) in POST data. A form field with the name 
+            <code>person[name]</code> will result in a dictionary 
+            <code>person</code> being created in the resulting <code>FieldStorage</code>:
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>...
+<span class="line-numbers">2</span><span class="tag">&lt;form</span> <span class="attribute-name">method</span>=<span class="string"><span class="delimiter">"</span><span class="content">post</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>
+<span class="line-numbers">3</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Name: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">person[name]</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">4</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">age</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Age: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">age</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">person[age]</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">5</span>  <span class="tag">&lt;label</span> <span class="attribute-name">for</span>=<span class="string"><span class="delimiter">"</span><span class="content">job</span><span class="delimiter">"</span></span><span class="tag">&gt;</span>Job: <span class="tag">&lt;/label&gt;</span><span class="tag">&lt;input</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">"</span><span class="content">job</span><span class="delimiter">"</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">"</span><span class="content">person[job]</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">6</span>  <span class="tag">&lt;input</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">"</span><span class="content">submit</span><span class="delimiter">"</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">"</span><span class="content">Update your profile</span><span class="delimiter">"</span></span> <span class="tag">/&gt;</span>
+<span class="line-numbers">7</span><span class="tag">&lt;/form&gt;</span>
+<span class="line-numbers">8</span>...</span></code></pre>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">PersonalData</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  person = <span class="predefined-constant">self</span>.post.getfirst(<span class="string"><span class="delimiter">'</span><span class="content">person</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>  <span class="keyword">return</span> uweb.Response(json.dumps(person), content_type=<span class="string"><span class="delimiter">"</span><span class="content">application/json</span><span class="delimiter">"</span></span>)
+</span></code></pre>
+          <p>
+            In the above code here, the <code>person</code> variable is a dictionary retrieved from the POST data, 
+            which is then presented to the client in JSON, by using a custom 
+            <a href="/documentation/response">response</a>.
+          </p>
+          <p>
+            Note that the 'numeric' age value is a string. 
+            This is of course because everything submitted in forms is in the form of a string. 
+            Conversion to appropriate types will have to be handled by the 
+            <a href="/documentation/pagemaker">PageMaker</a>. The <code>person</code> dictionary itself looks like this:<br>
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>{<span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">28</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">job</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Engineer</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">Elmer</span><span class="delimiter">'</span></span>}</span></code></pre>
+          <p>
+            <strong>N.B.:</strong> When using structured form data, you still need to use the 
+            <code>getfirst</code> method, because there might me separate (non-dictionary) values for the form name. 
+            There will never be more than one dictionary in the form values; if a single key is set more than once, 
+            the last-set value will be the one present in the dictionary.
+          </p>
+        </div>
+        <h2>Cookies</h2>
+        <div id="reading_cookies">
+          <h3>Reading cookies</h3>
+          <p>
+            Cookies provided by the client will also end up in the request object. 
+            They are both present on the request itself, as <code>self.req.vars['cookies']</code>, 
+            or through the PageMaker instance itself as <code>self.cookies</code> 
+            (both are from the scope of the PageMaker instance).
+          </p>
+          <p>The cookie storage itself is a plain Python dictionary, which makes for particularly easy access.</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">CookieInfo</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  sample = <span class="predefined-constant">self</span>.cookies[<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>]
+<span class="line-numbers">3</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">The sample cookie is set to %r</span><span class="delimiter">'</span></span> % sample</span></code></pre>
+          <p>Cookies cannot be set by using this dictionary though, for that the <code>AddCookie</code> method is required.</p>
+        </div>
+        <div id="setting_cookies">
+          <h3>Setting cookies</h3>
+          <p>
+            Response cookies are set using the request object.
+            The method to use for this is <code>AddCookie</code>, 
+            the easiest use of which looks like this:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">SetCookie</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="predefined-constant">self</span>.req.AddCookie(<span class="string"><span class="delimiter">'</span><span class="content">example</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">this is an example cookie value set by µWeb</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">3</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">A cookie named "example" was set.</span><span class="delimiter">'</span></span></span></code></pre>
+        
+          <p>
+            This creates a cookie that does not expire, will be provided with every request to the originating domain, 
+            and can be read from Javascript. To change these default behaviors, 
+            there are a number of optional arguments that can be provided, as detailed below. 
+            Of course, while the examples show one argument used at a time, they can all be combined:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">def</span> <span class="function">ShortLivedCookie</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers"> 2</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Sets an expiry time of the cookie, in this case 10 seconds.</span><span class="delimiter">"""</span></span>
+<span class="line-numbers"> 3</span>  <span class="predefined-constant">self</span>.req.AddCookie(<span class="string"><span class="delimiter">'</span><span class="content">quick</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">I will be gone soon</span><span class="delimiter">'</span></span>, max_age=<span class="integer">10</span>)
+<span class="line-numbers"> 4</span>
+<span class="line-numbers"> 5</span><span class="keyword">def</span> <span class="function">SecureCookie</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers"> 6</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Sets a cookie with the 'secure' flag enabled.</span><span class="content"></span></span>
+<span class="line-numbers"> 7</span><span class="comment"><span class="content"></span><span class="content"></span></span>
+<span class="line-numbers"> 8</span><span class="comment"><span class="content"></span><span class="content">  This means the cookie will only be provided with requests that the browser</span><span class="content"></span></span>
+<span class="line-numbers"> 9</span><span class="comment"><span class="content"></span><span class="content">  considers secure. This typically means they will only be present in requests</span><span class="content"></span></span>
+<span class="line-numbers"><strong>10</strong></span><span class="comment"><span class="content"></span><span class="content">  that use SSL (https://).</span><span class="content"></span></span>
+<span class="line-numbers">11</span><span class="comment"><span class="content"></span><span class="content">  </span><span class="delimiter">"""</span></span>
+<span class="line-numbers">12</span>  <span class="predefined-constant">self</span>.req.AddCookie(<span class="string"><span class="delimiter">'</span><span class="content">secret</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">This server adores you</span><span class="delimiter">'</span></span>, secure=<span class="predefined-constant">True</span>)
+<span class="line-numbers">13</span>
+<span class="line-numbers">14</span><span class="keyword">def</span> <span class="function">HttpOnlyCookie</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">15</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Sets a cookie that is only transferred in HTTP requests.</span><span class="content"></span></span>
+<span class="line-numbers">16</span><span class="comment"><span class="content"></span><span class="content"></span></span>
+<span class="line-numbers">17</span><span class="comment"><span class="content"></span><span class="content">  The cookie will not be readable from Javascript. This defaults to False.</span><span class="content"></span></span>
+<span class="line-numbers">18</span><span class="comment"><span class="content"></span><span class="content">  </span><span class="delimiter">"""</span></span>
+<span class="line-numbers">19</span>  <span class="predefined-constant">self</span>.req.AddCookie(<span class="string"><span class="delimiter">'</span><span class="content">secret</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Please no Javascript</span><span class="delimiter">'</span></span>, httponly=<span class="predefined-constant">True</span>)
+<span class="line-numbers"><strong>20</strong></span>
+<span class="line-numbers">21</span><span class="keyword">def</span> <span class="function">PathBoundCookie</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">22</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Sets a cookie that is is only valid for the path '/admin'.</span><span class="content"></span></span>
+<span class="line-numbers">23</span><span class="comment"><span class="content"></span><span class="content"></span></span>
+<span class="line-numbers">24</span><span class="comment"><span class="content"></span><span class="content">  This means that the client (browser) will only provide it for requests</span><span class="content"></span></span>
+<span class="line-numbers">25</span><span class="comment"><span class="content"></span><span class="content">  that go to '/admin' or a deeper nested path (such as '/admin/users'</span><span class="content"></span></span>
+<span class="line-numbers">26</span><span class="comment"><span class="content"></span><span class="content">  but will not be provided for requests that go to '/blog'</span><span class="content"></span></span>
+<span class="line-numbers">27</span><span class="comment"><span class="content"></span><span class="content">  </span><span class="delimiter">"""</span></span>
+<span class="line-numbers">28</span>  <span class="predefined-constant">self</span>.req.AddCookie(<span class="string"><span class="delimiter">'</span><span class="content">user</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">bobbytables</span><span class="delimiter">'</span></span>, path=<span class="string"><span class="delimiter">'</span><span class="content">/login</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">29</span>
+<span class="line-numbers"><strong>30</strong></span><span class="keyword">def</span> <span class="function">DomainBoundCookie</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">31</span>  <span class="comment"><span class="delimiter">"""</span><span class="content">Sets a cookie that is is only valid for the specified domain.</span><span class="content"></span></span>
+<span class="line-numbers">32</span><span class="comment"><span class="content"></span><span class="content"></span></span>
+<span class="line-numbers">33</span><span class="comment"><span class="content"></span><span class="content">  By default, if a cookie is set for 'www.example.com' it will not be provided</span><span class="content"></span></span>
+<span class="line-numbers">34</span><span class="comment"><span class="content"></span><span class="content">  for requests that go to 'example.com' itself. If we set the cookie to be valid</span><span class="content"></span></span>
+<span class="line-numbers">35</span><span class="comment"><span class="content"></span><span class="content">  for '.domain.com', it will be valid for domain.com and all sub-domains.</span><span class="content"></span></span>
+<span class="line-numbers">36</span><span class="comment"><span class="content"></span><span class="content"></span></span>
+<span class="line-numbers">37</span><span class="comment"><span class="content"></span><span class="content">  Explicitly specified domains MUST begin with a dot, or they will be rejected</span><span class="content"></span></span>
+<span class="line-numbers">38</span><span class="comment"><span class="content"></span><span class="content">  as per RFC2109. Additionally, cookies set by 'x.y.example.com' MAY NOT set</span><span class="content"></span></span>
+<span class="line-numbers">39</span><span class="comment"><span class="content"></span><span class="content">  their valid domain to be '.example.com' or they will be rejected.</span><span class="content"></span></span>
+<span class="line-numbers"><strong>40</strong></span><span class="comment"><span class="content"></span><span class="content"></span></span>
+<span class="line-numbers">41</span><span class="comment"><span class="content"></span><span class="content">  If the 'domain' is not specified, the cookie will be valid for the domain that</span><span class="content"></span></span>
+<span class="line-numbers">42</span><span class="comment"><span class="content"></span><span class="content">  set the cookie (as per HTTP_HOST from the environment)</span><span class="content"></span></span>
+<span class="line-numbers">43</span><span class="comment"><span class="content"></span><span class="content">  </span><span class="delimiter">"""</span></span>
+<span class="line-numbers">44</span>  <span class="predefined-constant">self</span>.req.AddCookie(<span class="string"><span class="delimiter">'</span><span class="content">session</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">SMqfUYLk3vCjkWL6</span><span class="delimiter">'</span></span>, domain=<span class="string"><span class="delimiter">'</span><span class="content">.example.com</span><span class="delimiter">'</span></span>)
+</span></code></pre>
+        </div>
+        <h2>Headers</h2>
+        <div id="incoming_headers">
+          <h3>Incoming headers</h3>
+          <p>
+            Request headers are made available in the <code>headers</code> member of the request object. 
+            This works like a regular dictionary (though writing to this dictionary is not guaranteed to be successful), 
+            where all the keys are in lower-case. 
+            The <code>get</code> method works to retrieve the header, 
+            with an optional default if the header wasn't provided by the client.
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">Headers</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="comment"># Hostname that the client (browser) requested:</span>
+<span class="line-numbers">3</span>  host = <span class="predefined-constant">self</span>.req.headers[<span class="string"><span class="delimiter">'</span><span class="content">host</span><span class="delimiter">'</span></span>]
+<span class="line-numbers">4</span>
+<span class="line-numbers">5</span>  <span class="comment"># Retrieves the user-agent from the request</span>
+<span class="line-numbers">6</span>  user_agent = <span class="predefined-constant">self</span>.req.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">user-agent</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">unknown</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">7</span>
+<span class="line-numbers">8</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">The host %r was visited by the user-agent identified as %r.</span><span class="delimiter">'</span></span> % (host, user_agent)
+</span></code></pre>
+        </div>
+        <div id="outgoing_headers">
+          <h3>Outgoing headers</h3>
+          <p>
+            <strong>While it is possible to provide response headers via the <code>Request</code> object, 
+              it is strongly advised to provide them using the <a href="/documentation/response">Response</a> object. 
+              This generally leads to clearer code, and has less caveats than using the methods laid out below.
+            </strong>
+          </p>
+          <p>
+            Adding headers to outgoing responses can be done using the <code>AddHeader</code> 
+            method of the request object. Please note that cookies can be set more easily 
+            (as described <a href="#setting_cookies">above</a>), 
+            as well as creating <a href="/documentation/response#redirect">redirects</a>.
+            Responding with a custom content-type and HTTP status code will be explained below. Setting your own headers, 
+            for example to provide ETags, is done like this:
+          </p>
+  <pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">TaggedResponse</span>(<span class="predefined-constant">self</span>, content):
+  <span class="line-numbers">2</span>  <span class="predefined-constant">self</span>.req.AddHeader(<span class="string"><span class="delimiter">'</span><span class="content">ETag</span><span class="delimiter">'</span></span>, hashlib.sha1(conten).hexdigest())
+  <span class="line-numbers">3</span>  <span class="keyword">return</span> content
+  </span></code></pre>
+          <p>
+            The above example returns a simple ETag based on the 
+            <a href="http://en.wikipedia.org/wiki/SHA-1" class="external">SHA-1 hash</a> of the content returned.
+          </p>
+        </div>
+        <div id="content_type">
+          <h4>Content-type</h4>
+          <p>
+            The content-type of the reply would usually be configured by returning a custom 
+            <a href="/documentation/response">Response</a> object. 
+            When it is not desirable to use this, 
+            the content-type can be set using the <code>SetContentType</code> method of the request object:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">CustomContent</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="keyword">with</span> <span class="predefined">file</span>(<span class="string"><span class="delimiter">'</span><span class="content">lolcat.jpg</span><span class="delimiter">'</span></span>) <span class="keyword">as</span> image:
+<span class="line-numbers">3</span>    <span class="predefined-constant">self</span>.req.SetContentType(<span class="string"><span class="delimiter">'</span><span class="content">image/jpeg</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">4</span>    <span class="keyword">return</span> image.read()
+</span></code></pre>
+          <p>
+            <strong>N.B.:</strong> 
+            Note that returning a <code>Response</code> object will override the content-type set on the 
+            <code>request</code> object. That is, <em>returning the image in the example above using <code>Response</code> 
+              (without the <code>content-type</code> defined there) will create a response with the default <code>text/html</code> content-type.</em>
+            </p>
+        </div>
+        <div id="http_response_code">
+          <h4>HTTP Response code</h4>
+          <p>
+            The HTTP response code on the webserver reply can also be set directly on the 
+            <code>request</code> object when a full <code>Response</code> object is for any reason not desirable:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">FourOhFour</span>(<span class="predefined-constant">self</span>, path):
+<span class="line-numbers">2</span>  <span class="predefined-constant">self</span>.req.SetHttpCode(<span class="integer">404</span>)
+<span class="line-numbers">3</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">"</span><span class="content">Sorry, we don't have a page that looks like %r</span><span class="delimiter">"</span></span> % path
+</span></code></pre>
+            <p>
+              <strong>N.B.:</strong> 
+              Note that returning a <code>Response</code> object will override the HTTP status code set on the 
+              <code>request</code> object. That is, 
+              <em>using a Response object in the example above (without providing the 
+                <code>httpcode</code> argument) will return a HTTP 200 OK response.</em>
+              </p>
+        </div>
+        <div id="environment">
+          <h2>environment</h2>
+          <p>
+            The request object also has available a number of environment variables. 
+            This is a dictionary that exists as the <code>env</code> member of the request object.
+            By default a number of commonly used (or useful) variables will be available, as well as all the HTTP request headers. 
+            These latter ones will be prefixed 'HTTP_', and all dashes will be converted to underscores, 
+            such that <code>Content-type</code> becomes <code>HTTP_CONTENT_TYPE</code>. 
+            The other variables are explained below:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">def</span> <span class="function">Headers</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">2</span>  <span class="comment"># Hostname that the client (browser) requested:</span>
+<span class="line-numbers">3</span>  host = <span class="predefined-constant">self</span>.req.headers[<span class="string"><span class="delimiter">'</span><span class="content">host</span><span class="delimiter">'</span></span>]
+<span class="line-numbers">4</span>
+<span class="line-numbers">5</span>  <span class="comment"># Retrieves the user-agent from the request</span>
+<span class="line-numbers">6</span>  user_agent = <span class="predefined-constant">self</span>.req.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">user-agent</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">unknown</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">7</span>
+<span class="line-numbers">8</span>  <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">The host %r was visited by the user-agent identified as %r.</span><span class="delimiter">'</span></span> % (host, user_agent)
+</span></code></pre>
+          <table>
+            <tbody><tr>
+              <th>Header </th>
+              <th>Meaning </th>
+            </tr>
+            <tr>
+              <td> CONTENT_LENGTH </td>
+              <td> The length of the HTTP POST data. Value default to 0 if no POST has been performed. </td>
+            </tr>
+            <tr>
+              <td> CONTENT_TYPE </td>
+              <td> The content-type of the HTTP POST data, or empty string. </td>
+            </tr>
+            <tr>
+              <td> HTTP_HOST </td>
+              <td> The host that the client is requesting (e.g. <em>underdark.nl</em>). </td>
+            </tr>
+            <tr>
+              <td> HTTP_REFERER </td>
+              <td> The URL from where people were linked to this page, where provided by the client. </td>
+            </tr>
+            <tr>
+              <td> HTTP_USER_AGENT </td>
+              <td> Browser identification string of the client. </td>
+            </tr>
+            <tr>
+              <td> PATH_INFO </td>
+              <td> Path portion of the request URL (e.g. <em>/admin/login</em>). </td>
+            </tr>
+            <tr>
+              <td> QUERY_STRING </td>
+              <td> The raw string of query arguments as received by the server (before parsing, refer to <a href="#Query-arguments">query arguments</a> for an easier interface). </td>
+            </tr>
+            <tr>
+              <td> REMOTE_ADDR </td>
+              <td> The client's network address (IPv4 or IPv6, whichever is provided by the underlying system). </td>
+            </tr>
+            <tr>
+              <td> REQUEST_METHOD </td>
+              <td> The request method. Typically one of <code>GET</code>, <code>HEAD</code> or <code>POST</code>. </td>
+            </tr>
+            <tr>
+              <td> UWEB_MODE </td>
+              <td> This is the operational method of µWeb, which is either <code>STANDALONE</code> or <code>MOD_PYTHON</code>. </td>
+            </tr>
+          </tbody></table>
+        </div>
+        <div id="extended_environment">
+          <h3>Extended enviornment</h3>
+          <p>
+            If more information is required, the environment dictionary can be extended with a number of additional points of information. 
+            This can be done by calling the <code>ExtendedEnvironment</code> method. This will expand the environment dictionary, 
+            and for the benefit of the caller, return it as well. Note that calling this routinely might significantly reduce performance, 
+            as extending the environment will among things, perform reverse-DNS lookups.
+          </p>
+          <p>
+            The additional values are the following:
+          </p>
+          <table>
+            <tbody><tr>
+              <th>Header </th>
+              <th>Meaning </th>
+            </tr>
+            <tr>
+              <td> DOCUMENT_ROOT </td>
+              <td> Working directory of the web server (for the given <code>VirtualHost</code> if running on Apache). </td>
+            </tr>
+            <tr>
+              <td> RAW_REQUEST </td>
+              <td> Raw HTTP request as received by the server, before any parsing. </td>
+            </tr>
+            <tr>
+              <td> REMOTE_HOST </td>
+              <td> Fully Qualified Domain Name of the client, checked using DNS. </td>
+            </tr>
+            <tr>
+              <td> SERVER_NAME </td>
+              <td> Local machine name of the computer running the web server. </td>
+            </tr>
+            <tr>
+              <td> SERVER_PORT </td>
+              <td> Listening port of the web server. </td>
+            </tr>
+            <tr>
+              <td> SERVER_LOCAL_NAME </td>
+              <td> The FQDN name of the server as known to the web server (Apache <code>VirtualHost</code> affects this). </td>
+            </tr>
+            <tr>
+              <td> SERVER_LOCAL_IP </td>
+              <td> The local IP that the server runs on. If the server has multiple IPs configured, the one used to connect to the client will be present here. </td>
+            </tr>
+            <tr>
+              <td> SERVER_PROTOCOL </td>
+              <td> The protocol used for the current connection. Typically <code>HTTP/1.0</code> or <code>HTTP/1.1</code>. </td>
+            </tr>
+          </tbody></table>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
