@@ -206,6 +206,17 @@ nav.pagination > ol > li.last > a::before {
   content: url('data:image/svg+xml,<svg fill="%23347ab7" viewBox="-2 -3 4 6" xmlns="http://www.w3.org/2000/svg"><polygon points="0.5 0, -1.5 -1.5, -1.5 1.5"/><rect x="0.5" y="-1.5" width="1" height="3"/></svg>');
 }
 
+main aside > form, main aside > nav, main aside > section {
+  margin-bottom: 1em;
+  border: none;
+  background-color: transparent;
+}
+
+main > section, main :not(aside):not(nav) > section {
+  padding: 1rem 5%;
+  word-wrap: break-word;
+}
+
 .syntaxhl .line-numbers {
   -moz-user-select: none;
   background-color: #EEEEEE;
