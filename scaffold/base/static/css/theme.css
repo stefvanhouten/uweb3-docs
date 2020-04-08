@@ -264,6 +264,9 @@ code .content {
 .syntaxhl .integer {
   color: #0000DD;
 }
+.syntaxhl .boolean {
+  color: #0000DD;
+}
 .syntaxhl .entity {
   color: #880000;
   font-weight: bold;

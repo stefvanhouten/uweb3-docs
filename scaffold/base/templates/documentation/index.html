@@ -31,6 +31,82 @@
           {{inline documentation/side-nav.html}}
       </section>
     </aside>
+    <div>
+      <section>
+        <div id="welcome">
+          <h1>Welcome</h1>
+          <p>
+            µWeb is a Python software package designed to provide a flexible, 
+            lightweight, but powerful base to build Web applications on top of. 
+            It can tie in to mod_python for Apache, or run stand-alone, 
+            using Python's included <code>BaseHTTPServer</code> package.
+          </p>
+          <p>µWeb provides an MVC like environment, built around three core philosophies:</p>
+          <ol>
+            <li>as little <a href="http://en.wikipedia.org/wiki/Boilerplate_code" class="external">boilerplate</a> as possible;</li>
+              <li>as little Magic™ as possible;</li>
+              <li>and separation by convention, not brute force.</li>
+            </ol>
+        </div>
+        <div id="components">
+          <h2>Componenets</h2>
+          <p>
+            µWeb is a framework that consists of mix of components building from a low-level standalone server on top of 
+            <code>BaseHTTPServer</code> to a refined template parser and database abstraction model.
+          </p>
+        </div>
+        <div id="request_router">
+          <h3>Request Router</h3>
+          <p>
+            The <strong><a href="/documentation/routing">Request Router</a></strong> is the entry point of the µWeb framework.
+             Any HTTP request seen by the server is passed through here, from which it is delegated to the proper handler.
+            </p>
+        </div>
+        <div id="pagemaker_and_response">
+          <h3>PageMaker and Response (Controller)</h3>
+          <p>
+            <strong><a href="/documentation/pagemaker">PageMaker</a></strong> 
+            provides the controller part of the MVC approach. Each Web request ends on a specific method of the PageMaker. 
+            From here, request information can be viewed (cookies, query arguments and POST data), 
+            and databases used to gather data to fulfill the request. Upon completion, 
+            a raw string or a more complex <strong><a href="/documentation/response">Response</a></strong> object may be returned.
+          </p>
+        </div>
+        <div id="templateparser">
+          <h3>TemplateParser (view)</h3>
+          <p>
+            Templates allow for a separation of presentation and logic, 
+            allowing you to move large parts of HTML or other output to a separate file. 
+            The <strong><a href="/documentation/templateparser">TemplateParser</a></strong> 
+            replaces all the tags left in the template with the given output, which can be simple variables, 
+            or the use of multi-level database objects. Also, as an added benefit, the default output of 
+            TemplateParser is such that any text fed into the template, is automatically made safe for HTML output.
+          </p>
+        </div>
+        <div id="database_abstraction">
+          <h3>Database abstraction (model)</h3>
+          <p>
+            The <strong><a href="/documentation/model">µWeb database model</a></strong> provides a Record class which provides for a smart interaction with your database tables. 
+            Creating a simple Record subclass for each of your (main) database tables allows you: 
+          </p>
+          <ul>
+            <li>to load database record by their primary key value;</li>
+              <li>automatic retrieval of 1-1 or n-1 relations;</li>
+              <li>creating, updating or deleting of records.</li>
+            </ul>
+        </div>
+        <div id="http_request_abstraction">
+          <h3>HTTP Request abstraction</h3>
+          <p>
+            The <strong><a href="/documentation/request">Request</a></strong> class ensures that, 
+            no matter the server that accepts the request (Apache or BaseHTTPServer), 
+            the various parts further on in the framework have access to header information, query arguments, 
+            cookies and POST data in a structured manner. More information on the client, server and other environment 
+            variables is also available here.
+          </p>
+        </div>
+      </section>
+    </div>
   </main>
 </body>
 </html>

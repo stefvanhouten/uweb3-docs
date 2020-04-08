@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>Header - Underdark CSS</title>
+    <meta charset="UTF-8">
+    <title>µWeb3 framework</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/module.css">
+    <link rel="stylesheet" href="/static/css/theme.css">
+  </head>
+
+  <body id="header" class="layout">
+    <header>
+      <div>
+        <div class="logo">
+          <a href="/">µWeb3 framework</a>
+          <p>A lightweight, high performance python web framework.</p>
+        </div>
+        {{inline nav.html}}
+        <button class="toggle">Toggle</button>
+      </div>
+    </header>
+    <main>
+      <aside>
+        <section>
+          <h2>Documentation</h2>
+          <nav>
+            {{inline documentation/side-nav.html}}
+          </section>
+        </aside>
+        <div>
+          <section>
+            <div id="escaping">
+              <h1>Escaping module</h1>
+              <p>
+                The escaping module is found in <code>uweb3/ext_lib/underdark/libs/safestring</code>
+                and contains the following classes:
+              </p>
+              <ol>
+                <li>BaseSafestring</li>
+                <li>SQLSAFE</li>
+                <li>HTMLsafestring</li>
+                <li>JSONsafestring</li>
+                <li>URLqueryargumentsafestring</li>
+                <li>URLsafestring</li>
+                <li>EmailAddresssafestring</li>
+              </ol>
+              <p>
+                Most of the classes work exactly the same with the exception of
+                the <code>SQLSAFE</code> class.
+                The goal is to provide an inbuild easy to use escaping/unescape module
+                for µWeb.
+              </p>
+              <p>
+                Not only does this module handle escaping/unescaping of data, 
+                it also allows you to concatinate a safestring object with a non safestring object. 
+                Doing this will escape the unsafe object in the process. 
+              </p>
+            </div>
+            <div id="escaping">
+              <h2>Escaping</h2>
+              <p>
+                Lets say we have a string of unsafe data that we want to display
+                on our page.
+                This string could for example contain some HTML,
+                we want to display the HTML but not inject it into our page.
+                So how do we do that?
+              </p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay">HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;bar&gt;</span><span class="delimiter">', unsafe=<span class="boolean">True</span></span></span>)
+>>> HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span></span><span class="delimiter">'</span>)</span></code>
+</pre>
+              <p>
+                Or when you are sure that the content is safe:
+              </p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay">HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;bar&gt;</span><span class="delimiter">', unsafe=<span class="boolean">False</span></span></span>)
+>>> HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;test&gt;</span><span class="delimiter">'</span></span>)</span></code>
+</pre>
+            </div>
+            <div id="unescaping">
+              <h2>Unescaping</h2>
+              <p>Unescaping is easy:</p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay">data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span><span class="delimiter">'</span></span>)
+data.unescape(data)
+>>> HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;test&gt;</span><span class="delimiter">'</span></span>)</span></code>
+</pre>
+            </div>
+            <div id="concatenation">
+              <h2>Concatenation</h2>
+              <p>Concatenating a safestring with a unsafestring will yield the following result:</p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay">data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;bar&gt;</span><span class="delimiter">', unsafe=<span class="boolean">True</span></span></span>)
+>>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span></span><span class="delimiter">'</span>)
+data + <span class="string"><span class="delimiter">"</span><span class="content">&lt;foobar&gt;</span><span class="delimiter">"</span>
+>>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;&amp;ltfoobar&amp;gt</span></span><span class="delimiter">'</span>)</span></span></code>
+</pre>
+            <p>Concatenating two declared safestrings:</p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay">data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;bar&gt;</span><span class="delimiter">', unsafe=<span class="boolean">True</span></span></span>)
+>>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span></span><span class="delimiter">'</span>)
+data + HTMLsafestring(<span class="string"><span class="delimiter">"</span><span class="content">&lt;foobar&gt;</span><span class="delimiter">"</span>, unsafe=<span class="boolean">False</span>)
+>>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;&lt;foobar&gt;</span></span><span class="delimiter">'</span>)</span></span></code>
+</pre>
+              <p>
+                When concatenating the module looks at the first item and uses the methods from the given safestring type.
+                In this case we are concatenating a HTMLsafestring with a regular string. 
+                What happends is the following:
+              </p>
+                <ol>
+                  <li>Determine types</li>
+                  <li>Objects are of same type:
+                    <ol>
+                      <li>Easy, we can just concatenate them together.</li>
+                    </ol>
+                  </li>
+                  <li>Object is instance of another safestring type:
+                    <ol>
+                      <li>Use the unescape method from said type</li>
+                      <li>Use the escape method from target type</li>
+                      <li>Concatenate target type plus newly escaped data</li>
+                    </ol>
+                  </li>
+                  <li>Object is not of same type and not an instance of another safestring type:
+                    <ol>
+                      <li>Use the escape method from the target type</li>
+                      <li>Concatenate target type plus newly escaped data</li>
+                    </ol>
+                  </li>
+                </ol>
+            </div>
+          </section>
+        </div>
+      </main>
+    </body>
+  </html>

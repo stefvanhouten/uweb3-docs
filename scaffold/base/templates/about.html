@@ -1,27 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <title>Header - Underdark CSS</title>
-  <meta charset="UTF-8">
-  <title>µWeb3 framework</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/static/css/base.css">
-  <link rel="stylesheet" href="/static/css/layout.css">
-  <link rel="stylesheet" href="/static/css/module.css">
-  <link rel="stylesheet" href="/static/css/theme.css">
-</head>
+  <head>
+    <title>Header - Underdark CSS</title>
+    <meta charset="UTF-8">
+    <title>µWeb3 framework</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/module.css">
+    <link rel="stylesheet" href="/static/css/theme.css">
+  </head>
 
-<body id="header" class="layout">
-  <header>
-    <div>
-      <div class="logo">
-        <a href="/">µWeb3 framework</a>
-        <p>A lightweight, high performance python web framework.</p>
+  <body id="header" class="layout">
+    <header>
+      <div>
+        <div class="logo">
+          <a href="/">µWeb3 framework</a>
+          <p>A lightweight, high performance python web framework.</p>
+        </div>
+        {{inline nav.html}}
+        <button class="toggle">Toggle</button>
       </div>
-      {{inline nav.html}}
-      <button class="toggle">Toggle</button>
-    </div>
-  </header>
-</body>
+    </header>
+    <main>
+      <section>
+        <h1>About µWeb</h1>
+        <p>We feel that python is one of the most clean and powerful languages
+          to program with. Naturally we wanted to use Python for web-development
+          and web related projects, but found most of the available frameworks
+          either lacking in features or too restrictive. Based on the Python
+          core principles set by <acronym title="Benovolent dictator for life">BDFL</acronym>
+          Guido van Rossum, we decided to build µWeb for internal use at <a
+            href="http://underdark.nl">Underdark</a>. After using it for various
+          projects we felt is was ready to be used by others and improved with
+          the help of a community.</p>
+
+        <h2>Philosophy</h2>
+        <p>We believe strongly in the core philosophy of Python itself and try to use those guidelines when developing µWeb:</p>
+        <ol>
+          <li>as little <a href="http://en.wikipedia.org/wiki/Boilerplate_code" class="external">boilerplate</a> as possible;</li>
+		      <li>as little Magic™ as possible;</li>
+		      <li>and separation by convention, not brute force.</li>
+        </ol>
+      </section>
+    </main>
+  </body>
 </html>

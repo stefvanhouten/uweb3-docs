@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <div id="beta">
+          <h1>Hot reload</h1>
+          <p>
+            This feature should be enabled while you are developing a project. 
+            Before µWeb had to be manualy restarted every time you made a change in a file. 
+            While this feature is enabled it watches all of your µWeb files and restarts when something changes. 
+          </p>
+          <p>
+            To make use of this feature all you have to do is add the following line to your <code>config.ini</code>:
+          </p>
+          <code>
+            [development]<br>
+            dev = True
+          </code>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
