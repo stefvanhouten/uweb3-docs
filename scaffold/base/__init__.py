@@ -42,7 +42,7 @@ def main():
       ('/documentation/beta/hotreloading', 'HotReloading'),
       ('/documentation/beta/sqlalchemy', 'SqlAlchemy'),
       ('/documentation/beta/route_detection', 'RouteDetection'),
-      ('/documentation/beta/ini_manager', 'IniManager'),
+      ('/documentation/beta/settings_manager', 'IniManager'),
       ('/documentation/beta/secure_cookies', 'SecureCookies'),
       ('/documentation/beta/xsrf_decorator', 'XsrfDecorator'),
       ('/documentation/beta/escaping_module', 'EscapingModule'),

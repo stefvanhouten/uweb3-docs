@@ -267,14 +267,34 @@ code .content {
 .syntaxhl .boolean {
   color: #0000DD;
 }
+.syntaxhl .include {
+  color: #BB4444;
+  font-weight: bold;
+}
+.syntaxhl .magic {
+  color: #ff9900;
+  font-weight: bold;
+}
+.syntaxhl .tab {
+  padding-left: 1.5em;
+}
 .syntaxhl .entity {
   color: #880000;
   font-weight: bold;
 }
-
+.syntaxhl .function {
+  color: #0066BB;
+  font-weight: bold;
+}
+.syntaxhl .predefined-constant {
+  color: #006699;
+}
 #side-nav ul li{
   list-style: none;
 }
 #side-nav ul li ul li {
   list-style: decimal;
+}
+.type{
+  color: #0000DD;
 }

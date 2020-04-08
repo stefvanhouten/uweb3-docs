@@ -59,6 +59,11 @@
                 it also allows you to concatinate a safestring object with a non safestring object. 
                 Doing this will escape the unsafe object in the process. 
               </p>
+              <h3>Methods</h3>
+              <ol>
+                <li>Safestring.unescape(<span class="type">Safestring</span>(value))</li>
+                <li>SQLSAFE.sanitize(<span class="type">String</span>(value) | <span class="type">Int</span>(value), qoutes=<span class="type">Boolean</span>())</li>
+              </ol>
             </div>
             <div id="escaping">
               <h2>Escaping</h2>
@@ -83,7 +88,7 @@
             </div>
             <div id="unescaping">
               <h2>Unescaping</h2>
-              <p>Unescaping is easy:</p>
+              <p>Unescaping is easy but is automaticly done when concatenating strings. It can also be used manually:</p>
 <pre>
 <code class="python syntaxhl"><span class="CodeRay">data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span><span class="delimiter">'</span></span>)
 data.unescape(data)
@@ -92,20 +97,6 @@ data.unescape(data)
             </div>
             <div id="concatenation">
               <h2>Concatenation</h2>
-              <p>Concatenating a safestring with a unsafestring will yield the following result:</p>
-<pre>
-<code class="python syntaxhl"><span class="CodeRay">data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;bar&gt;</span><span class="delimiter">', unsafe=<span class="boolean">True</span></span></span>)
->>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span></span><span class="delimiter">'</span>)
-data + <span class="string"><span class="delimiter">"</span><span class="content">&lt;foobar&gt;</span><span class="delimiter">"</span>
->>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;&amp;ltfoobar&amp;gt</span></span><span class="delimiter">'</span>)</span></span></code>
-</pre>
-            <p>Concatenating two declared safestrings:</p>
-<pre>
-<code class="python syntaxhl"><span class="CodeRay">data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;bar&gt;</span><span class="delimiter">', unsafe=<span class="boolean">True</span></span></span>)
->>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span></span><span class="delimiter">'</span>)
-data + HTMLsafestring(<span class="string"><span class="delimiter">"</span><span class="content">&lt;foobar&gt;</span><span class="delimiter">"</span>, unsafe=<span class="boolean">False</span>)
->>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;&lt;foobar&gt;</span></span><span class="delimiter">'</span>)</span></span></code>
-</pre>
               <p>
                 When concatenating the module looks at the first item and uses the methods from the given safestring type.
                 In this case we are concatenating a HTMLsafestring with a regular string. 
@@ -132,6 +123,48 @@ data + HTMLsafestring(<span class="string"><span class="delimiter">"</span><span
                     </ol>
                   </li>
                 </ol>
+              <p>Concatenating a safestring with a unsafestring will yield the following result:</p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay">data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;bar&gt;</span><span class="delimiter">', unsafe=<span class="boolean">True</span></span></span>)
+>>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span></span><span class="delimiter">'</span>)
+data + <span class="string"><span class="delimiter">"</span><span class="content">&lt;foobar&gt;</span><span class="delimiter">"</span>
+>>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;&amp;ltfoobar&amp;gt</span></span><span class="delimiter">'</span>)</span></span></code>
+</pre>
+            <p>Concatenating two declared safestrings:</p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay">data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&lt;bar&gt;</span><span class="delimiter">', unsafe=<span class="boolean">True</span></span></span>)
+>>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;</span></span><span class="delimiter">'</span>)
+data + HTMLsafestring(<span class="string"><span class="delimiter">"</span><span class="content">&lt;foobar&gt;</span><span class="delimiter">"</span>, unsafe=<span class="boolean">False</span>)
+>>> data = HTMLsafestring(<span class="string"><span class="delimiter">'</span><span class="content">foo&amp;lt;test&amp;gt;&lt;foobar&gt;</span></span><span class="delimiter">'</span>)</span></span></code>
+</pre>
+            </div>
+            <div id="SQLSAFE">
+              <h2>SQLSAFE</h2>
+              <p>This class works slightly different from the other classes but the concept is the same.</p>
+              <p>
+                <strong>DISCLAIMER</strong> even though this class should prevent SQL injections 
+                <strong>NEVER</strong> give away controll over your queries.
+              </p>
+            </div>
+            <div id="syntax">
+              <h3>Syntax</h3>
+              <p>Writing a prepared query that is ready for database usage: </p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay">SQLSAFE(<span class="string"><span class="delimiter">"</span><span class="content">SELECT * FROM users WHERE username = ?;</span><span class="delimiter">", values=(<span class="string"><span class="delimiter">"</span><span class="content">username'</span><span class="delimiter">",</span></span></span>)</span>, unsafe=<span class="boolean">True</span></span>)
+>>> SQLSAFE(<span class="string"><span class="delimiter">"</span><span class="content">SELECT * FROM users WHERE username = 'username\\''</span></span><span class="delimiter">"</span>)</span></code>
+</pre>
+            </div>
+            <div id="sanitizing">
+              <h3>Sanitizing data</h3>
+              <p>It is also possible to sanitize the data you want to escape yourself:</p>
+<pre>
+<code class="python syntaxhl"><span class="CodeRay"><span class="string"><span class="delimiter">"</span><span class="content">SELECT * FROM users WHERE username = "</span></span> + SQLSAFE.sanitize(<span class="string"><span class="delimiter">"</span><span class="content">username'</span><span class="delimiter">"</span>, qoutes=<span class="boolean">True</span>);
+>>> <span class="string"><span class="delimiter">"</span><span class="content">SELECT * FROM users WHERE username = 'username\\''</span></span><span class="delimiter">"</span></span></code>
+</pre>
+                <p>
+                  If the qoutes paramater is supplied it will wrap the escaped data inside quotes however,
+                  if the supplied variable is an integer it will not be wrapped inside quotes. 
+                </p>
             </div>
           </section>
         </div>
