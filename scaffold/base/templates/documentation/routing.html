@@ -35,7 +35,7 @@
       <section>
         <h1>Request Router</h1>
         <div id="routing_explained">
-          <h2>Routing explained [outdated]</h2>
+          <h2>Routing explained</h2>
           <p>
             When a request is sent to µWeb, the first thing that needs to be made is the decision where and how to handle it. 
             The request router is the place where this happens. 
@@ -48,23 +48,25 @@
             The example given is a very stripped down version of the handler from the uweb_info example project:
           </p>
 <pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import</span> <span class="include">uweb3</span>
-<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">uweb3.uweb_info</span> <span class="keyword">import</span> <span class="include">pages</span>
+<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">.</span> <span class="keyword">import</span> <span class="include">pages</span>
 <span class="line-numbers"> 3</span>
-<span class="line-numbers"> 4</span>PAGE_CLASS = pages.PageMaker
-<span class="line-numbers"> 5</span>ROUTES = (
-<span class="line-numbers"> 6</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/static/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Static</span><span class="delimiter">'</span></span>),
-<span class="line-numbers"> 7</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/(broken.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">FourOhFour</span><span class="delimiter">'</span></span>),
-<span class="line-numbers"> 8</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/haltandcatchfire</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">MakeFail</span><span class="delimiter">'</span></span>),
-<span class="line-numbers"> 9</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/json</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Json</span><span class="delimiter">'</span></span>),
-<span class="line-numbers"><strong>10</strong></span>    (<span class="string"><span class="delimiter">'</span><span class="content">/text</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Text</span><span class="delimiter">'</span></span>),
-<span class="line-numbers">11</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/redirect/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Redirect</span><span class="delimiter">'</span></span>),
-<span class="line-numbers">12</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/OpenIDLogin</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_OpenIdInitiate</span><span class="delimiter">'</span></span>),
-<span class="line-numbers">13</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/OpenIDValidate</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_OpenIdValidate</span><span class="delimiter">'</span></span>),
-<span class="line-numbers">14</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/ULF-Challenge</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_ULF_Challenge</span><span class="delimiter">'</span></span>),
-<span class="line-numbers">15</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/ULF-Login</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_ULF_Verify</span><span class="delimiter">'</span></span>),
-<span class="line-numbers">16</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Index</span><span class="delimiter">'</span></span>))
-<span class="line-numbers">17</span>
-<span class="line-numbers">18</span>uweb3.ServerSetup()
+<span class="line-numbers"> 4</span><span class="keyword">def</span> <span class="function">main</span>():
+<span class="line-numbers"> 5</span><span class="tab"></span>config_file = os.path.join(os.path.dirname(__file__), <span class="string"><span class="delimiter">'</span><span class="content">config.ini</span><span class="delimiter">'</span>)
+<span class="line-numbers"> 6</span><span class="tab"></span>config = uweb3.read_config(config_file)
+<span class="line-numbers"> 7</span><span class="tab"></span>routes = [
+<span class="line-numbers"> 8</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/static/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Static</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"> 9</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/(broken.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">FourOhFour</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">10</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/haltandcatchfire</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">MakeFail</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">11</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/json</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Json</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"><strong>12</strong></span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/text</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Text</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">13</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/redirect/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Redirect</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">14</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/OpenIDLogin</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_OpenIdInitiate</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">15</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/OpenIDValidate</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_OpenIdValidate</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">16</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/ULF-Challenge</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_ULF_Challenge</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">17</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/ULF-Login</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">_ULF_Verify</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">18</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Index</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">19</span><span class="tab"></span>]
+<span class="line-numbers">20</span><span class="tab"></span><span class="keyword">return</span> uweb3.uWeb(pages.PageMaker, routes, config=config)
 </span></code></pre>
           <p>
             In the example above, the following things happen:
@@ -74,14 +76,11 @@
               Firstly, we import the uweb package, since we need that to configure the webserver from
             </li>
             <li>
-              Secondly, we import the module where the class with our handling methods is defined (the uweb3.uweb_info.pages module).
+              Secondly, we import the module where the class with our handling methods is defined.
             </li>
             <li>
-              PAGE_CLASS is the global that holds a reference to the PageMaker subclass for your project, from where requests are handled.
-              ROUTES is the global that defines the various requests that the router understands, and directs them to the (named) method of the PAGE_CLASS.
-            </li>
-            <li>
-              Finally, uweb3.ServerSetup() starts the webserver for those cases where it runs StandAlone (and does some initial setting up for when it runs using Apache)
+              Pages.PageMaker is the object that holds a reference to the PageMaker subclass for your project, from where requests are handled.
+              routes is the variable that holds all of route configuration and directs them to the (named) method of the Pages.PageMaker class.
             </li>
           </ul>
         </div>
@@ -98,10 +97,17 @@
           <p>
             Requesting "/user/elmer/edit/27" on the following router:
           </p>
-<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>PAGE_CLASS = blog.BlogPages
-<span class="line-numbers">2</span>ROUTES = (
-<span class="line-numbers">3</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/user/(</span><span class="content">\w</span><span class="content">*)/edit/(</span><span class="content">\d</span><span class="content">*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">EditArticle</span><span class="delimiter">'</span></span>),
-<span class="line-numbers">4</span>    (<span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Index</span><span class="delimiter">'</span></span>))
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import</span> <span class="include">uweb3</span>
+<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">.</span> <span class="keyword">import</span> <span class="include">pages</span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span><span class="keyword">def</span> <span class="function">main</span>():
+<span class="line-numbers"> 5</span><span class="tab"></span>config_file = os.path.join(os.path.dirname(__file__), <span class="string"><span class="delimiter">'</span><span class="content">config.ini</span><span class="delimiter">'</span>)
+<span class="line-numbers"> 6</span><span class="tab"></span>config = uweb3.read_config(config_file)
+<span class="line-numbers"> 7</span><span class="tab"></span>routes = [
+<span class="line-numbers"> 8</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/user/(</span><span class="content">\w</span><span class="content">*)/edit/(</span><span class="content">\d</span><span class="content">*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">EditArticle</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"> 9</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Index</span><span class="delimiter">'</span></span>), 
+<span class="line-numbers">10</span><span class="tab"></span>]
+<span class="line-numbers">11</span><span class="tab"></span><span class="keyword">return</span> uweb3.uWeb(pages.PageMaker, routes, config=config)
 </span></code></pre>
           <p>
             Will end up calling the method blog.BlogPages.EditArticle with the arguments ('Elmer', '27'). 
@@ -136,6 +142,53 @@
               </ul>
             </li>
           </ul>
+        </div>
+
+        <div id="optional_routing">
+          <h2>Optional routing</h2>
+          <p>It is also possible to allow only certain request types to a specific route. In this example we allow only <code>POST</code> requests towards our <code>/post_only_route</code>:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import</span> <span class="include">uweb3</span>
+<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">.</span> <span class="keyword">import</span> <span class="include">pages</span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span><span class="keyword">def</span> <span class="function">main</span>():
+<span class="line-numbers"> 5</span><span class="tab"></span>config_file = os.path.join(os.path.dirname(__file__), <span class="string"><span class="delimiter">'</span><span class="content">config.ini</span><span class="delimiter">'</span>)
+<span class="line-numbers"> 6</span><span class="tab"></span>config = uweb3.read_config(config_file)
+<span class="line-numbers"> 7</span><span class="tab"></span>routes = [
+<span class="line-numbers"> 8</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/static/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Static</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"> 9</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/post_only_route</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">PostOnlyHandler</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">10</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/(broken.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">FourOhFour</span><span class="delimiter">'</span></span>),
+<span class="line-numbers">11</span><span class="tab"></span>]
+<span class="line-numbers">12</span><span class="tab"></span><span class="keyword">return</span> uweb3.uWeb(pages.PageMaker, routes, config=config)
+</span></code></pre>
+          <p>Support for multiple request types is also available:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import</span> <span class="include">uweb3</span>
+<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">.</span> <span class="keyword">import</span> <span class="include">pages</span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span><span class="keyword">def</span> <span class="function">main</span>():
+<span class="line-numbers"> 5</span><span class="tab"></span>config_file = os.path.join(os.path.dirname(__file__), <span class="string"><span class="delimiter">'</span><span class="content">config.ini</span><span class="delimiter">'</span>)
+<span class="line-numbers"> 6</span><span class="tab"></span>config = uweb3.read_config(config_file)
+<span class="line-numbers"> 7</span><span class="tab"></span>routes = [
+<span class="line-numbers"> 6</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/static/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Static</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"> 6</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/post_and_get_route</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">PostAndGetHandler</span><span class="delimiter">'</span></span>, (<span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>)),
+<span class="line-numbers"> 7</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/(broken.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">FourOhFour</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">11</span><span class="tab"></span>]
+<span class="line-numbers">12</span><span class="tab"></span><span class="keyword">return</span> uweb3.uWeb(pages.PageMaker, routes, config=config)
+</span></code></pre>
+        <p>Not only is it possible to filter on request type, we can also filter based on the which host is sending the request:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import</span> <span class="include">uweb3</span>
+<span class="line-numbers"> 2</span><span class="keyword">from</span> <span class="include">.</span> <span class="keyword">import</span> <span class="include">pages</span>
+<span class="line-numbers"> 3</span>
+<span class="line-numbers"> 4</span><span class="keyword">def</span> <span class="function">main</span>():
+<span class="line-numbers"> 5</span><span class="tab"></span>config_file = os.path.join(os.path.dirname(__file__), <span class="string"><span class="delimiter">'</span><span class="content">config.ini</span><span class="delimiter">'</span>)
+<span class="line-numbers"> 6</span><span class="tab"></span>config = uweb3.read_config(config_file)
+<span class="line-numbers"> 7</span><span class="tab"></span>routes = [
+<span class="line-numbers"> 6</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/static/(.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Static</span><span class="delimiter">'</span></span>),
+<span class="line-numbers"> 6</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/post_and_get_route</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">PostAndGetHandler</span><span class="delimiter">'</span></span>, (<span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>), <span class="string"><span class="delimiter">'</span><span class="content">127.0.0.1</span><span class="delimiter">'</span>),
+<span class="line-numbers"> 7</span><span class="tab"></span><span class="tab"></span>(<span class="string"><span class="delimiter">'</span><span class="content">/(broken.*)</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">FourOhFour</span><span class="delimiter">'</span></span>)
+<span class="line-numbers">11</span><span class="tab"></span>]
+<span class="line-numbers">12</span><span class="tab"></span><span class="keyword">return</span> uweb3.uWeb(pages.PageMaker, routes, config=config)
+</span></code></pre>
+          <p>In this example only <code>GET</code> and <code>POST</code> request from host <code>127.0.0.1</code> will be allowed on route: <code>post_and_get_route</code></p>
         </div>
       </section>
     </div>
