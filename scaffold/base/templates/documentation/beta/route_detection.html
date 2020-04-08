@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <div id="automatic_route_detection">
+          <h1>Automatic route detection</h1>
+          <div id="changing_route_directory">
+            <h2>Changing the route directory</h2>
+            <p>
+              If you want µWeb3 to scan a different directory than the default directory we can change this in the config.
+              Navigate to:
+            </p>
+            <code>project_folder/scaffold/base/config.ini</code>
+            <p>and add the following key to the routing section:</p>
+<pre><code>[routing]
+default_routing = new_directory
+</code></pre>
+          </div>
+          <div id="disabling_automatic_routing">
+            <h2>Disabling automatic route detection</h2>
+            <p>
+              The automatic route detection is enabled by default in µWeb3. To disable this setting naviage to: 
+            </p>
+            <code>project_folder/scaffold/base/config.ini</code>
+            <p>and add the following key to the routing section:</p>
+<pre><code>[routing]
+disable_automatic_route_detection = True
+</code></pre>
+        </div>
+        <div id="manually_adding_routes">
+          <h2>Manually adding routes</h2>
+        </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
