@@ -128,19 +128,20 @@
 </span></code></pre>
             
           <p>Full documentation, with plenty of example template uses can be found on the TemplateParser wiki-entry.</p>
+          <div id="template_directory_configuration">
+            <h2>Template directory configuration</h2>
+            <p>
+              By default, template are loaded from the 'templates' directory that is expected to be on the same path as the pagemaker module. 
+              If your pagemaker is located on /var/www/uweb_project/project.py, then templates will be automatically loaded from /var/www/uweb_project/templates/.
+            </p>
+            <p>
+              To change the default template loading path, define a new path in the class variable TEMPLATE_DIR. This should be a relative path (and defaults to 'templates').
+            </p>
+          </div>
         </div>  
-        <div id="template_directory_configuration">
-          <h2>Template directory configuration</h2>
-          <p>
-            By default, template are loaded from the 'templates' directory that is expected to be on the same path as the pagemaker module. 
-            If your pagemaker is located on /var/www/uweb_project/project.py, then templates will be automatically loaded from /var/www/uweb_project/templates/.
-          </p>
-          <p>
-            To change the default template loading path, define a new path in the class variable TEMPLATE_DIR. This should be a relative path (and defaults to 'templates').
-          </p>
-        </div>
       </section>
     </div>
   </main>
+  {{inline footer.html}}
 </body>
 </html>

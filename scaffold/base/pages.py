@@ -5,10 +5,6 @@ import uweb3
 
 class PageMaker(uweb3.DebuggingPageMaker):
   """Holds all the request handlers for the application"""
-
-  def Index(self):
-    """Returns the index template"""
-    return self.parser.Parse('index.html')
   
   def Uweb(self):
     return self.parser.Parse("uweb.html")

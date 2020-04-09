@@ -23,8 +23,7 @@ def main():
   config_file = os.path.join(os.path.dirname(__file__), 'config.ini')
   config = uweb3.read_config(config_file)
   routes = [
-      ('/', 'Index'),
-      ('/uweb', 'Uweb'),
+      ('/', 'Uweb'),
       ('/about', 'About'),
       ('/contact', 'Contact'),
       ('/documentation', 'Documentation'),
