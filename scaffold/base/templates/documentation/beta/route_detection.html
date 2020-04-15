@@ -35,18 +35,19 @@
       <section>
         <div id="automatic_route_detection">
           <h1>Automatic route detection</h1>
-          <div id="changing_route_directory">
-            <h2>Changing the route directory</h2>
-            <p>
-              If you want µWeb3 to scan a different directory than the default directory we can change this in the config.
-              Navigate to:
-            </p>
-            <code>project_folder/scaffold/base/config.ini</code>
-            <p>and add the following key to the routing section:</p>
+        </div>
+        <div id="changing_route_directory">
+          <h2>Changing the route directory</h2>
+          <p>
+            If you want µWeb3 to scan a different directory than the default directory we can change this in the config.
+            Navigate to:
+          </p>
+          <code>project_folder/scaffold/base/config.ini</code>
+          <p>and add the following key to the routing section:</p>
 <pre><code>[routing]
 default_routing = new_directory
 </code></pre>
-          </div>
+        </div>  
           <div id="disabling_automatic_routing">
             <h2>Disabling automatic route detection</h2>
             <p>
@@ -60,7 +61,20 @@ disable_automatic_route_detection = True
         </div>
         <div id="manually_adding_routes">
           <h2>Manually adding routes</h2>
-        </div>
+          <p>
+            If you rather not use the automatic route detection feature you can also manually add routes.
+          </p>
+          <p>
+            To do this navigate to: <code>/project_folder/scaffold/base/__init__.py</code>. 
+            In this file you can modify the following line of code to adjust the routes you want to use.
+          </p>
+          <code class="python syntaxhl">
+            <span class="keyword">return</span> uweb3.uWeb([pages.PageMaker, your_route.PageMaker], routes, config=config)
+          </code>
+          <p>Or for a simple application with a single route:</p>
+          <code class="python syntaxhl">
+            <span class="keyword">return</span> uweb3.uWeb(pages.PageMaker, routes, config=config)
+          </code>
         </div>
       </section>
     </div>

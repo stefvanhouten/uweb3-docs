@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Header - Underdark CSS</title>
+  <meta charset="UTF-8">
+  <title>µWeb3 framework</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <div id="secure_cookie">
+          <h1>Secure cookie</h1>
+          <p>
+            The <code>SecureCookie</code> class in µWeb3 works very simular to a <a href="https://en.wikipedia.org/wiki/JSON_Web_Token">JSON Web Token</a>.
+            The goal is to give you a cookie that is more secure than a regular cookie yet simple and easy to use. 
+            This class gives you the control to perform <a href="https://nl.wikipedia.org/wiki/CRUD">C.R.U.D</a> operations on cookies you created with this class.
+            The cookies creates with the <code>SecureCookie</code> class are tamper proof and validated before they are added to the cookiejar attribute. 
+            Whenever a cookie is invalid or couldn't be validated it is not added to the cookiejar.
+          </p>
+          <p>What we need to create a <code>SecureCookie</code>:</p>
+          <ol>
+            <li>Secret</li>
+            <li>Hash</li>
+            <li>Seperator</li>
+            <li>Payload</li>
+          </ol>
+          <p>The structure of the <code>SecureCookie</code>:</p>
+          <code>([content][hash])[seperator][content]</code>
+          <p>
+            The content is <a href="https://docs.python.org/3/library/pickle.html">pickled</a> and then converted to hexadecimal. 
+            Then it the content and the secret are added together. 
+            This new string is then hashed, a seperator is added and the last step is adding the content behind the seperator.
+          </p>
+          <p>The result:</p>
+          <code>1b3dedb88a0779f3713c00766d001f38000b49f5<strong>+</strong>80037d7100285807000000757365725f696471015801000000337102580b0000007072656d697373696f6e7371034b0158040000006461746171047d71056804680473752e</code>
+          <p>
+            <strong>N.B</strong>
+            The content is not encrypted just converted to hex, so do not use this cookie for sensetive data. 
+            The reason the cookie is secure is because when the content is edited it does not match the hash anymore. 
+            When the hashes do not match the cookie is rendered useless and deleted.
+            The only time it can be successfully edited is when they have the secret of your server, which should never happen.
+          </p>
+        </div>
+        <div id="methods">
+          <h3>Methods</h3>
+          <ol>
+            <li>Create(<span class="type">String</span>(name), <span class="type">Aany</span>(data), <span class="type">Dictionary</span>(attributes))</li>
+            <li>Update(<span class="type">String</span>(name), <span class="type">Aany</span>(data), <span class="type">Dictionary</span>(attributes))</li>
+            <li>Delete(<span class="type">String</span>(name))</li>
+          </ol>
+          <h3>Attributes</h3>
+          <ol>
+            <li>cookiejar</li>
+          </ol>
+        </div>
+        <div id="creating">
+          <h2>Creating a secure cookie</h2>
+          <p>
+            Every <a href="/documentation/pagemaker">PageMaker</a> has access to the <code>secure_cookie_connection</code> attribute, 
+            which contains the secret we use to hash our cookie. 
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb3.model <span class="keyword">import</span> SecureCookie
+<span class="line-numbers">2</span>
+<span class="line-numbers">3</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.PageMaker):
+<span class="line-numbers">4</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">5</span><span class="tab"></span><span class="tab">cookie_manager = </span>SecureCookie(<span class="predefined-constraint">self</span>.secure_cookie_connection)
+<span class="line-numbers">6</span><span class="tab"></span><span class="tab">cookie_manager.Create(<span class="string"><span class="delimiter">"<span class="content">my_first_cookie</span><span class="delimiter">"</span></span></span>, { <span class="string"><span class="delimiter">"<span class="content">foo</span><span class="delimiter">"</span></span>: <span class="string"><span class="delimiter">"<span class="content">bar</span><span class="delimiter">"</span></span></span></span> })
+<span class="line-numbers">7</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
+</span></code></pre>
+        </div>
+        <div id="reading">
+          <h2>Reading a secure cookie</h2>
+          <p>
+            The <code>SecureCookie</code> class retrieves cookies from the browser and returns the data to its original form. 
+            Cookies are stored in a dictionary and available in the <code>SecureCookie.cookiejar</code> attribute.
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb3.model <span class="keyword">import</span> SecureCookie
+<span class="line-numbers">2</span>
+<span class="line-numbers">3</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.PageMaker):
+<span class="line-numbers">4</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">5</span><span class="tab"></span><span class="tab">cookie_manager = </span>SecureCookie(<span class="predefined-constraint">self</span>.secure_cookie_connection)
+<span class="line-numbers">6</span><span class="tab"></span><span class="tab">cookie_manager.cookiejar
+>>> { <span class="string"><span class="delimiter">"<span class="content">my_first_cookie</span><span class="delimiter">"</span></span></span>: {<span class="string"><span class="delimiter">"<span class="content">foo</span><span class="delimiter">"</span></span></span>: <span class="string"><span class="delimiter">"<span class="content">bar</span><span class="delimiter">"</span></span></span> } }
+<span class="line-numbers">7</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
+</span></code></pre>
+        </div>
+        <div id="updating">
+          <h2>Updating a secure cookie</h2>
+          <p>
+            When updating a cookie keep in mind that the cookie will updated the next time the page loads, 
+            however data in the <code>cookiejar</code> is updated after the update method is called.
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb3.model <span class="keyword">import</span> SecureCookie
+<span class="line-numbers">2</span>
+<span class="line-numbers">3</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.PageMaker):
+<span class="line-numbers">4</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">5</span><span class="tab"></span><span class="tab">cookie_manager = </span>SecureCookie(<span class="predefined-constraint">self</span>.secure_cookie_connection)
+<span class="line-numbers">6</span><span class="tab"></span><span class="tab">cookie_manager.Update(<span class="string"><span class="delimiter">"<span class="content">my_first_cookie</span><span class="delimiter">"</span></span></span>, <span class="string"><span class="delimiter">"<span class="content">some string</span><span class="delimiter">"</span></span></span>)
+<span class="line-numbers">7</span><span class="tab"></span><span class="tab">cookie_manager.cookiejar
+>>> { <span class="string"><span class="delimiter">"<span class="content">my_first_cookie</span><span class="delimiter">"</span></span></span>:<span class="string"><span class="delimiter"> "<span class="content">some string</span><span class="delimiter">"</span></span></span> }
+<span class="line-numbers">8</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
+</span></code></pre>
+        </div>
+        <div id="deleting">
+          <h2>Deleting a secure cookie</h2>
+          <p>The same goes for deleting a cookie from the <code>SecureCookie</code> class. 
+            When deleting a cookie it will be removed from the cookiejar immediately 
+            but in the browser this will not be seen untill the next request. 
+          </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb3.model <span class="keyword">import</span> SecureCookie
+<span class="line-numbers">2</span>
+<span class="line-numbers">3</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.PageMaker):
+<span class="line-numbers">4</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">5</span><span class="tab"></span><span class="tab">cookie_manager = </span>SecureCookie(<span class="predefined-constraint">self</span>.secure_cookie_connection)
+<span class="line-numbers">6</span><span class="tab"></span><span class="tab">cookie_manager.Delete(<span class="string"><span class="delimiter">"<span class="content">my_first_cookie</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">7</span><span class="tab"></span><span class="tab">cookie_manager.cookiejar
+>>> {}
+<span class="line-numbers">8</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
+</span></code></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+  {{inline footer.html}}
+
+</body>
+</html>

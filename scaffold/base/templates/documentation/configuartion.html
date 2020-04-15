@@ -48,7 +48,11 @@
             A few default settings are:
           </p>
 <pre><code>[development]
+access_logging = True
+error_logging = True
 dev = True
+host = 127.0.0.1
+port = 8000
 </code></pre>
             Setting the dev flag to True can be use for many things, 
             one of those is that µWeb3 is now monitoring your files for changes and will restart accordingly.
@@ -65,6 +69,13 @@ host = host
 user = username
 password = pass
 database = dbname
+</code></pre>
+        </div>
+        <div id="routing">
+          <h2>Routing configuartion</h2>
+<pre><code>[development]
+disable_automatic_route_detection = False
+default_routing = routes
 </code></pre>
         </div>
       </section>

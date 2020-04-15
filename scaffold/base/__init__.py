@@ -9,7 +9,6 @@ import uweb3
 # Application
 from . import pages
 
-
 def main():
   """Creates a uWeb3 application.
 
@@ -26,6 +25,7 @@ def main():
       ('/', 'Uweb'),
       ('/about', 'About'),
       ('/contact', 'Contact'),
+      ('/download', 'Download'),
       ('/documentation', 'Documentation'),
       ('/documentation/installation', 'Installation'),
       ('/documentation/getting_started', 'GettingStarted'),

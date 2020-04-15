@@ -33,7 +33,7 @@
         </aside>
         <div>
           <section>
-            <div id="escaping">
+            <div>
               <h1>Escaping module</h1>
               <p>
                 The escaping module is found in <code>uweb3/ext_lib/underdark/libs/safestring</code>
@@ -59,10 +59,12 @@
                 it also allows you to concatinate a safestring object with a non safestring object. 
                 Doing this will escape the unsafe object in the process. 
               </p>
+            </div>
+            <div id="methods">
               <h3>Methods</h3>
               <ol>
                 <li>Safestring.unescape(<span class="type">Safestring</span>(value))</li>
-                <li>SQLSAFE.sanitize(<span class="type">String</span>(value) | <span class="type">Int</span>(value), qoutes=<span class="type">Boolean</span>())</li>
+                <li>SQLSAFE.sanitize(<span class="type">String</span>(value) | <span class="type">Int</span>(value), quotes=<span class="type">Boolean</span>())</li>
               </ol>
             </div>
             <div id="escaping">
@@ -158,11 +160,11 @@ data + HTMLsafestring(<span class="string"><span class="delimiter">"</span><span
               <h3>Sanitizing data</h3>
               <p>It is also possible to sanitize the data you want to escape yourself:</p>
 <pre>
-<code class="python syntaxhl"><span class="CodeRay"><span class="string"><span class="delimiter">"</span><span class="content">SELECT * FROM users WHERE username = "</span></span> + SQLSAFE.sanitize(<span class="string"><span class="delimiter">"</span><span class="content">username'</span><span class="delimiter">"</span>, qoutes=<span class="boolean">True</span>);
+<code class="python syntaxhl"><span class="CodeRay"><span class="string"><span class="delimiter">"</span><span class="content">SELECT * FROM users WHERE username = "</span></span> + SQLSAFE.sanitize(<span class="string"><span class="delimiter">"</span><span class="content">username'</span><span class="delimiter">"</span>, quotes=<span class="boolean">True</span>);
 >>> <span class="string"><span class="delimiter">"</span><span class="content">SELECT * FROM users WHERE username = 'username\\''</span></span><span class="delimiter">"</span></span></code>
 </pre>
                 <p>
-                  If the qoutes paramater is supplied it will wrap the escaped data inside quotes however,
+                  If the quotes paramater is supplied it will wrap the escaped data inside quotes however,
                   if the supplied variable is an integer it will not be wrapped inside quotes. 
                 </p>
             </div>

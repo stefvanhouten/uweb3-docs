@@ -1,90 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <title>Header - Underdark CSS</title>
-  <meta charset="UTF-8">
-  <title>µWeb3 framework</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/static/css/base.css">
-  <link rel="stylesheet" href="/static/css/layout.css">
-  <link rel="stylesheet" href="/static/css/module.css">
-  <link rel="stylesheet" href="/static/css/theme.css">
-</head>
+  <head>
+    <title>Header - Underdark CSS</title>
+    <meta charset="UTF-8">
+    <title>µWeb3 framework</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/module.css">
+    <link rel="stylesheet" href="/static/css/theme.css">
+  </head>
 
-<body id="header" class="layout">
-  <header>
-    <div>
-      <div class="logo">
-        <a href="/">µWeb3 framework</a>
-        <p>A lightweight, high performance python web framework.</p>
+  <body id="header" class="layout">
+    <header>
+      <div>
+        <div class="logo">
+          <a href="/">µWeb3 framework</a>
+          <p>A lightweight, high performance python web framework.</p>
+        </div>
+        {{inline nav.html}}
+        <button class="toggle">Toggle</button>
       </div>
-      {{inline nav.html}}
-      <button class="toggle">Toggle</button>
-    </div>
-  </header>
-  <main>
-    <aside>
-      <section>
-        <h2>Documentation</h2>
-        <nav>
-          {{inline documentation/side-nav.html}}
-      </section>
-    </aside>
-    <div>
-      <section>
-        <div id="sqlalchemy">
-          <h1>SQLAlchemy</h1>
-          <p>
-            <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> is available in µWeb3's <code>model</code> just like the <a href="/documentation/model">Record</a> class.
-            µWeb3's <code>model.AlchemyBaseRecord</code> class comes with almost all the functionality that the basic <code>model.Record</code> class posseses.
-            The goal was to add a simple yet powerfull <a href="https://en.wikipedia.org/wiki/Object-relational_mapping">ORM</a> that also supports most
-            of the powerfull <code>model.Record</code> functions. 
-            The <code>model.AlchemyBaseRecord</code> is compatible with the <code>model.Record</code> class because it handles 
-            <a href="/documentation/model#comparisons">comparisons</a> in the same way.
-          </p>
-          <p>
-            However because SQLAlchemy is a little more strict with a few things we also lose some functionality. 
-            For instance we cannot change the primary key on the go, which is possible when using <code>model.Record</code>. 
-          </p>
-        </div>
-        <div id="methods">
-          <h3>Methods</h3>
-          <ol>
-            <li>AlchemyBaseRecord.copy(<span class="type">String</span>(section), <span class="type">String</span>(key), <span class="type">String</span>(value))</li>
-            <li>AlchemyBaseRecord.deepcopy()</li>
-            <li>AlchemyBaseRecord.iteritems()</li>
-            <li>AlchemyBaseRecord.itervalues()</li>
-            <li>AlchemyBaseRecord.items()</li>
-            <li>AlchemyBaseRecord.values()</li>
-            <li><strong>AlchemyRecord</strong>.Delete()</li>
-            <li>AlchemyRecord.Save()</li>
+    </header>
+    <main>
+      <aside>
+        <section>
+          <h2>Documentation</h2>
+          <nav>
+            {{inline documentation/side-nav.html}}
+          </section>
+        </aside>
+        <div>
+          <section>
+            <div id="sqlalchemy">
+              <h1>SQLAlchemy</h1>
+              <p>
+                <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> is
+                available in µWeb3's <code>model</code> just like the <a
+                  href="/documentation/model">Record</a> class.
+                µWeb3's <code>model.AlchemyBaseRecord</code> class comes with
+                almost all the functionality that the basic <code>model.Record</code>
+                class posseses.
+                The goal was to add a simple yet powerfull <a
+                  href="https://en.wikipedia.org/wiki/Object-relational_mapping">ORM</a>
+                that also supports most
+                of the powerfull <code>model.Record</code> functions.
+                The <code>model.AlchemyBaseRecord</code> is compatible with the
+                <code>model.Record</code> class because it handles
+                <a href="/documentation/model#comparisons">comparisons</a> in
+                the same way.
+              </p>
+              <p>
+                However because SQLAlchemy is a little more strict with a few
+                things we also lose some functionality.
+                For instance we cannot change the primary key on the go, which
+                is possible when using <code>model.Record</code>.
+              </p>
+            </div>
+            <div id="methods">
+              <h3>Methods</h3>
+              <ol>
+                <li>AlchemyBaseRecord.copy(<span class="type">String</span>(section),
+                  <span class="type">String</span>(key), <span class="type">String</span>(value))</li>
+                <li>AlchemyBaseRecord.deepcopy()</li>
+                <li>AlchemyBaseRecord.iteritems()</li>
+                <li>AlchemyBaseRecord.itervalues()</li>
+                <li>AlchemyBaseRecord.items()</li>
+                <li>AlchemyBaseRecord.values()</li>
+                <li><strong>AlchemyRecord</strong>.Delete()</li>
+                <li>AlchemyRecord.Save()</li>
 
-          </ol>
-          <h3>Classmethods</h3>
-          <ol>
-            <li>AlchemyBaseRecord.TableName</li>
-            <li><strong>AlchemyRecord</strong>.FromPrimary(session, p_key)</li>
-            <li>AlchemyRecord.Create(session, record)</li>
-            <li>AlchemyRecord.Update(session, conditions,  values)</li>
-            <li>AlchemyRecord.DeletePrimary(session, p_key)</li>
-            <li>AlchemyRecord.List(session, conditions=None, limit=None, offset=None,
-              order=None, yield_unlimited_total_first=False)</li>
-          </ol>
-        </div>
-        <div id="setup">
-          <h2>Setup</h2>
-          <p>
-            When using SQLAlchemy we have to take a few extra steps before we can start working with our database.<br>
-            Lets start with setting up our database:
-          </p>
+              </ol>
+              <h3>Classmethods</h3>
+              <ol>
+                <li>AlchemyBaseRecord.TableName()</li>
+                <li><strong>AlchemyRecord</strong>.FromPrimary(<span
+                    class="type">SQLAlchemyConnectionObject</span>(session),
+                  <span class="type">Integer</span>(p_key))</li>
+                <li>AlchemyRecord.Create(<span class="type">SQLAlchemyConnectionObject</span>(session),
+                  <span class="type">Dictionary</span>(record))</li>
+                <li>AlchemyRecord.Update(<span class="type">SQLAlchemyConnectionObject</span>(session),
+                  <span class="type">List</span>(conditions), <span
+                    class="type">Any</span>(values))</li>
+                <li>AlchemyRecord.DeletePrimary(<span class="type">SQLAlchemyConnectionObject</span>(session),
+                  <span class="type">Integer</span>(p_key)))</li>
+                <li>AlchemyRecord.List(<span class="type">SQLAlchemyConnectionObject</span>(session),
+                  conditions=None|<span class="type">List</span>, limit=None|<span
+                    class="type">Integer</span>, offset=None|<span class="type">Integer</span>,<br>
+                  order=None|<span class="type">ClassAttribute</span>,
+                  yield_unlimited_total_first=<span class="type">Boolean</span>)</li>
+              </ol>
+            </div>
+            <div id="setup">
+              <h2>Setup</h2>
+              <p>
+                When using SQLAlchemy we have to take a few extra steps before
+                we can start working with our database.<br>
+                Lets start with setting up our database:
+              </p>
 <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>-- TABLE `message`
 <span class="line-numbers">2</span>+----+--------+--------------------------------------------------+
 <span class="line-numbers">3</span>| ID | author | message                                          |
 <span class="line-numbers">4</span>+----+--------+--------------------------------------------------+
 </span></code></pre>
-          <p>We can do this ourselfs or we can do it with SQLAlchemy:</p>
-<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>uweb3
+              <p>We can do this ourselfs or we can do it with SQLAlchemy:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>uweb3
 <span class="line-numbers"> 2</span><span class="keyword">from </span>sqlalchemy <span class="keyword">import</span>  Column, Integer, String, ForeignKey, MetaData
 <span class="line-numbers"> 3</span><span class="keyword">from </span>sqlalchemy.ext.declarative <span class="keyword">import </span>declarative_base
 <span class="line-numbers"> 4</span>
@@ -103,36 +124,38 @@
 <span class="line-numbers">17</span><span class="tab"></span><span class="tab"></span>buildTables(<span class="predefined-constant">self</span>.connection, <span class="predefined-constant">self</span>.session)
 <span class="line-numbers">18</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
 </span></code></pre>
-          <p>
-            Now that we have our database sorted we can setup the class that we can use to talk with our database:
-          </p>
-<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>uweb3
+                <p>
+                  Now that we have our database sorted we can setup the class
+                  that we can use to talk with our database:
+                </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>uweb3
 <span class="line-numbers"> 2</span><span class="keyword">from </span>sqlalchemy <span class="keyword">import</span>  Column, Integer, String
 <span class="line-numbers"> 3</span><span class="keyword">from </span>sqlalchemy.ext.declarative <span class="keyword">import </span>declarative_base
 <span class="line-numbers"> 4</span>
 <span class="line-numbers"> 5</span>Base = declarative_base()
 <span class="line-numbers"> 6</span><span class="comment">#First the AlchemyRecord then the Base, If we change this around it wont work as intended!</span>
 <span class="line-numbers"> 7</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.model.AlchemyRecord, Base):
-<span class="line-numbers"> 8</span><span class="tab"></span>__tablename__ = 'message'
+<span class="line-numbers"> 8</span><span class="tab"></span>__tablename__ = <span class="string"><span class="delimiter">"<span class="content">message</span><span class="delimiter">"</span></span></span>
 <span class="line-numbers"> 9</span>
 <span class="line-numbers">10</span><span class="tab"></span>ID = Column(Integer, primary_key=<span class="boolean">True</span>)
 <span class="line-numbers">11</span><span class="tab"></span>author = Column(String, nullable=<span class="boolean">False</span>)
 <span class="line-numbers">11</span><span class="tab"></span>message = Column(String)
 </span></code></pre>
-        </div>
-        <div id="creating_your_first_record">
-          <h2>Creating your first AlchemyRecord</h2>
-          <p>
-            Creating your first <code>AlchemyRecord</code> using inbuild µWeb3 functions is easy:
-          </p>
-<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>uweb3
+              </div>
+              <div id="creating_your_first_record">
+                <h2>Creating your first AlchemyRecord</h2>
+                <p>
+                  Creating your first <code>AlchemyRecord</code> using inbuild
+                  µWeb3 functions is easy:
+                </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>uweb3
 <span class="line-numbers"> 2</span><span class="keyword">from </span>sqlalchemy <span class="keyword">import</span>  Column, Integer, String, ForeignKey, MetaData
 <span class="line-numbers"> 3</span><span class="keyword">from </span>sqlalchemy.ext.declarative <span class="keyword">import </span>declarative_base
 <span class="line-numbers"> 4</span>
 <span class="line-numbers"> 5</span>Base = declarative_base()
 <span class="line-numbers"> 6</span><span class="comment">#First the AlchemyRecord then the Base, If we change this around it wont work as intended!</span>
 <span class="line-numbers"> 7</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.model.AlchemyRecord, Base):
-<span class="line-numbers"> 8</span><span class="tab"></span>__tablename__ = 'message'
+<span class="line-numbers"> 8</span><span class="tab"></span>__tablename__ = <span class="string"><span class="delimiter">"<span class="content">message</span><span class="delimiter">"</span></span></span>
 <span class="line-numbers"> 9</span>
 <span class="line-numbers">10</span><span class="tab"></span>ID = Column(Integer, primary_key=<span class="boolean">True</span>)
 <span class="line-numbers">11</span><span class="tab"></span>author = Column(String, nullable=<span class="boolean">False</span>)
@@ -154,37 +177,149 @@
 <span class="line-numbers">26</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
 >>> Message({{ </span><span class="string"><span class="delimiter">"</span><span class="content">ID</span><span class="delimiter">"</span>: <span class="integer">1</span>, </span></span><span class="string"><span class="delimiter">"</span><span class="content">author</span><span class="delimiter">"</span>: </span><span class="string"><span class="delimiter">"</span><span class="content">Stef</span><span class="delimiter">"</span>, </span><span class="string"><span class="delimiter">"</span><span class="content">message</span><span class="delimiter">"</span>: </span><span class="string"><span class="delimiter">"</span><span class="content">Hello World!</span><span class="delimiter">"</span> })
 </span></code></pre>
-<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>-- TABLE `message`
+                <pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span>-- TABLE `message`
 <span class="line-numbers">2</span>+----+--------+--------------------------------------------------+
 <span class="line-numbers">3</span>| ID | author | message                                          |
 <span class="line-numbers">4</span>+----+--------+--------------------------------------------------+
 <span class="line-numbers">5</span>|  1 | Stef   | Hello World!                                     |
 <span class="line-numbers">6</span>+----+--------+--------------------------------------------------+
 </span></code></pre>
-        </div>
-        <div id="fetching_your_first_record">
-          <h2>Fetching your first AlchemyRecord</h2>
-<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">23</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.SqAlchemyPageMaker):
+              </div>
+              <div id="fetching">
+                <h2>Fetching</h2>
+                <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">23</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.SqAlchemyPageMaker):
 <span class="line-numbers">24</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
 <span class="line-numbers"><strong>25</strong></span><span class="tab"></span><span class="tab"></span>Message.FromPrimary(self.session, <span class="integer">1</span>)
 <span class="line-numbers">26</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
 >>> Message({{ </span><span class="string"><span class="delimiter">"</span><span class="content">ID</span><span class="delimiter">"</span>: <span class="integer">1</span>, </span></span><span class="string"><span class="delimiter">"</span><span class="content">author</span><span class="delimiter">"</span>: </span><span class="string"><span class="delimiter">"</span><span class="content">Stef</span><span class="delimiter">"</span>, </span><span class="string"><span class="delimiter">"</span><span class="content">message</span><span class="delimiter">"</span>: </span><span class="string"><span class="delimiter">"</span><span class="content">Hello World!</span><span class="delimiter">"</span> })
 </span></code></pre>
-        </div>
-        <div id="updating_your_first_record">
-          <h2>Updating your first AlchemyRecord</h2>
-<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">23</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.SqAlchemyPageMaker):
+              </div>
+              <div id="updating">
+                <h2>Updating</h2>
+                <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">23</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.SqAlchemyPageMaker):
 <span class="line-numbers">24</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
-<span class="line-numbers"><strong>25</strong></span><span class="tab"></span><span class="tab"></span>msg = Message.FromPrimary(self.session, <span class="integer">1</span>)
-<span class="line-numbers"><strong>25</strong></span><span class="tab"></span><span class="tab"></span>msg.message = <span class="string"><span class="delimiter">"</span><span class="content">Foo Bar!</span><span class="delimiter">"</span></span>
-<span class="line-numbers"><strong>25</strong></span><span class="tab"></span><span class="tab"></span>msg.Save()
-<span class="line-numbers">26</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
+<span class="line-numbers">25</span><span class="tab"></span><span class="tab"></span>msg = Message.FromPrimary(self.session, <span class="integer">1</span>)
+<span class="line-numbers">26</span><span class="tab"></span><span class="tab"></span>msg.message = <span class="string"><span class="delimiter">"</span><span class="content">Foo Bar!</span><span class="delimiter">"</span></span>
+<span class="line-numbers">27</span><span class="tab"></span><span class="tab"></span>msg.Save()
+<span class="line-numbers">28</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
 >>> Message({{ </span><span class="string"><span class="delimiter">"</span><span class="content">ID</span><span class="delimiter">"</span>: <span class="integer">1</span>, </span></span><span class="string"><span class="delimiter">"</span><span class="content">author</span><span class="delimiter">"</span>: </span><span class="string"><span class="delimiter">"</span><span class="content">Stef</span><span class="delimiter">"</span>, </span><span class="string"><span class="delimiter">"</span><span class="content">message</span><span class="delimiter">"</span>: </span><span class="string"><span class="delimiter">"</span><span class="content">Foo Bar!</span><span class="delimiter">"</span> })
 </span></code></pre>
-        </div>
-      </section>
-    </div>
-  </main>
-  {{inline footer.html}}
-</body>
-</html>
+</div>
+                  <div id="listing">
+                    <h2>Listing</h2>
+                    <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">23</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.SqAlchemyPageMaker):
+  <span class="line-numbers">24</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
+  <span class="line-numbers">25</span><span class="tab"></span><span class="tab"></span>Message.List(self.session, conditions=[Message.ID >= 1, Message.ID <= 10])
+  <span class="line-numbers">28</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
+  >>> [Message({{ </span><span class="string"><span class="delimiter">"</span><span class="content">ID</span><span class="delimiter">"</span>: <span class="integer">1</span>, </span></span><span class="string"><span class="delimiter">"</span><span class="content">author</span><span class="delimiter">"</span>: </span><span class="string"><span class="delimiter">"</span><span class="content">Stef</span><span class="delimiter">"</span>, </span><span class="string"><span class="delimiter">"</span><span class="content">message</span><span class="delimiter">"</span>: </span><span class="string"><span class="delimiter">"</span><span class="content">Foo Bar!</span><span class="delimiter">"</span> })]
+  </span></code></pre>
+                  </div>
+              <div id="deleting">
+                <h2>Deleting</h2>
+                <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">23</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.SqAlchemyPageMaker):
+<span class="line-numbers">24</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">25</span><span class="tab"></span><span class="tab"></span>msg = Message.FromPrimary(self.session, <span class="integer">1</span>)
+<span class="line-numbers">26</span><span class="tab"></span><span class="tab"></span>msg.Delete()
+<span class="line-numbers">27</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
+</span></code></pre>
+                  <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers">23</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.SqAlchemyPageMaker):
+<span class="line-numbers">24</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">25</span><span class="tab"></span><span class="tab"></span>Message.DeletePrimary(self.session, <span class="integer">1</span>)
+<span class="line-numbers">26</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>)
+</span></code></pre>
+                  </div>
+                  <div id="relations">
+                    <h2>Relations</h2>
+                    <p>
+                      Just like the <code>model.Record</code> class SQLAlchemy
+                      can automaticly load related records.
+                      However this requires a little bit of tweaking to our
+                      exisiting<code>Message</code> class.
+                      For more detailed documentation you can also take a look at <a href="https://docs.sqlalchemy.org/en/13/orm/loading_relationships.html">SQLalchemy's documentation</a>. 
+                    </p>
+                    <p>
+                      Consider the following tables in your database:
+                    </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span>-- TABLE `message`
+<span class="line-numbers"> 2</span>+----+--------+--------------------------------------------------+
+<span class="line-numbers"> 3</span>| ID | author | message                                          |
+<span class="line-numbers"> 4</span>+----+--------+--------------------------------------------------+
+<span class="line-numbers"> 5</span>|  1 |      1 | First message!                                   |
+<span class="line-numbers"> 6</span>+----+--------+--------------------------------------------------+
+<span class="line-numbers"> 7</span>
+<span class="line-numbers"><strong> 8</strong></span>-- TABLE `author`
+<span class="line-numbers"> 9</span>+----+-------+--------------------+
+<span class="line-numbers">10</span>| ID | name  | emailAddress       |
+<span class="line-numbers">11</span>+----+-------+--------------------+
+<span class="line-numbers">12</span>|  1 | Stef  | stef@underdark.nl  |
+<span class="line-numbers">13</span>+----+-------+--------------------+
+</span></code></pre>
+                    <p>And the following class definitions:</p>
+                    <pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>uweb3
+<span class="line-numbers"> 2</span><span class="keyword">from </span>sqlalchemy <span class="keyword">import</span>  Column, Integer, String, ForeignKey
+<span class="line-numbers"> 3</span><span class="keyword">from </span>sqlalchemy.ext.declarative <span class="keyword">import </span>declarative_base
+<span class="line-numbers"> 4</span><span class="keyword">from </span>sqlalchemy.orm <span class="keyword">import </span>lazyload, relationship
+<span class="line-numbers"> 5</span>
+<span class="line-numbers"> 6</span>Base = declarative_base()
+<span class="line-numbers"> 7</span><span class="comment">#First the AlchemyRecord then the Base, If we change this around it wont work as intended!</span>
+<span class="line-numbers"> 8</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.model.AlchemyRecord, Base):
+<span class="line-numbers"> 9</span><span class="tab"></span>__tablename__ = <span class="string"><span class="delimiter">"<span class="content">message</span><span class="delimiter">"</span></span></span>
+<span class="line-numbers">10</span>
+<span class="line-numbers">11</span><span class="tab"></span>ID = Column(Integer, primary_key=<span class="boolean">True</span>)
+<span class="line-numbers">12</span><span class="tab"></span>author = Column(<span class="string"><span class="delimiter">"<span class="content">author</span><span class="delimiter">"</span></span></span>, Integer, ForeignKey(<span class="string"><span class="delimiter">"</span><span class="content">author.ID</span><span class="delimiter">"</span></span>))
+<span class="line-numbers">13</span><span class="tab"></span>message = Column(String)
+<span class="line-numbers">14</span><span class="tab"></span>children = relationship(<span class="string"><span class="delimiter">"<span class="content">Author</span><span class="delimiter">"</span></span></span>, lazy=<span class="string"><span class="delimiter">"<span class="content">select</span><span class="delimiter">"</span></span></span>)
+<span class="line-numbers">15</span>
+<span class="line-numbers">16</span><span class="keyword">class </span><span class="function">Author</span>(uweb3.model.AlchemyRecord, Base):
+<span class="line-numbers">17</span><span class="tab"></span>__tablename__ = <span class="string"><span class="delimiter">"<span class="content">author</span><span class="delimiter">"</span></span></span>
+<span class="line-numbers">18</span>
+<span class="line-numbers">19</span><span class="tab"></span>ID = Column(Integer, primary_key=<span class="boolean">True</span>)
+<span class="line-numbers">20</span><span class="tab"></span>name = Column(String)
+<span class="line-numbers">21</span><span class="tab"></span>emailAddress = Column(String)</span></code></pre>
+                  </div>
+                  <p>
+                    Now when we query the <code>Message</code> table we get all
+                    information necessary to populate our <code>Message</code>
+                    class with data.
+                    When we choose to use lazyloading we will initialy only
+                    fetch the data of the class the request is coming from, in
+                    this case the <code>Message</code> class.
+                    We can access the data of our child class with: <code>Message.children</code>
+                    which will yield:
+                  </p>
+                  <code class="python syntaxhl">Author({ <span class="string"><span
+                        class="delimiter">"</span><span class="content">ID</span><span
+                        class="delimiter">"</span></span>: <span
+                      class="integer">1</span>, <span class="string"><span
+                        class="delimiter">"</span><span class="content">name</span><span
+                        class="delimiter">"</span></span>: <span class="string"><span
+                        class="delimiter">"</span><span class="content">Stef</span><span
+                        class="delimiter">"</span></span>, <span class="string"><span
+                        class="delimiter">"</span><span class="content">emailAddress</span><span
+                        class="delimiter">"</span></span>: <span class="string"><span
+                        class="delimiter">"</span><span class="content">stef@underdark.nl</span><span
+                        class="delimiter">"</span></span> })</code>
+                  
+                <div id="comparisons">
+                  <h2>comparisons</h2>
+                  <h3>Equality</h3>
+                  <p>Records must pass the following criteria to be considered equal to one another:</p>
+                  <ol>
+                    <li><strong>Type</strong>: Two objects must be of the same type (class)</li>
+                    <li><strong>Primary key</strong>: The primary key values must compare equal</li>
+                    <li><strong>Foreign relations</strong>: Foreign relations must be the same. If these are not resolved in one object but are in the other, the primary key of the resolved object will be compared to the data of the other record.</li>
+                    <li><strong>Data</strong>: All remaining data fields must be equal and symmetric (i.e. both objects describe the same fields)</li>
+                  </ol>
+                  <h3>Greater / smaller</h3>
+                  <p>
+                    Comparing two objects with one another to tell their relative order can only be done if they are of the same type. 
+                    If they are, the comparison is done based on the primary key values of the records. 
+                    In most cases this will result in an ordering similar to the database-insert order.
+                  </p>
+                </div>
+                </section>
+              </div>
+            </main>
+            {{inline footer.html}}
+          </body>
+        </html>
