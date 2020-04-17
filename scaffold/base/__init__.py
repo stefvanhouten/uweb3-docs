@@ -25,7 +25,6 @@ def main():
       ('/', 'Uweb'),
       ('/about', 'About'),
       ('/contact', 'Contact'),
-      ('/download', 'Download'),
       ('/documentation', 'Documentation'),
       ('/documentation/installation', 'Installation'),
       ('/documentation/getting_started', 'GettingStarted'),
@@ -45,6 +44,7 @@ def main():
       ('/documentation/beta/secure_cookies', 'SecureCookies'),
       ('/documentation/beta/xsrf_decorator', 'XsrfDecorator'),
       ('/documentation/beta/escaping_module', 'EscapingModule'),
+      ('/documentation/beta/event_listener', 'EventListener'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
       ]

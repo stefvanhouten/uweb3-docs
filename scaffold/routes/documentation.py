@@ -55,4 +55,7 @@ class PageMaker(uweb3.DebuggingPageMaker):
 
   def EscapingModule(self):
     return self.parser.Parse('documentation/beta/escaping_module.html')
+
+  def EventListener(self):
+    return self.parser.Parse('documentation/beta/event_listener.html')
   
