@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>µWeb3 Websockets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <div id="websockets">
+          <h1>Websockets</h1>
+          <p>
+            Since µWeb3 runs on WSGI we can add websockets to our application and combine 
+            them together to one efficient server. 
+            µWeb3 recognizes which requests are ment for the application and which ones are ment for the routes that you defined for your websocket. 
+          </p>
+        </div>
+        <div id="setup">
+          <h2>Setup</h2>
+          <p>
+            Install <a href="https://pypi.org/project/websockets/">websockets</a>:
+          </p>
+          <code>
+              pip3 install webscokets
+          </code>
+          <p>
+            Once we have this installed navigate to:
+          </p>
+          <code>
+            /your_project_folder/scaffold/serve.py
+          </code>
+          <p>
+            Normally your <code>serve.py</code> will look something like this:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>base
+<span class="line-numbers"> 2</span>
+<span class="line-numbers"> 3</span><span class="keyword">def</span> <span class="function">main</span>():
+<span class="line-numbers"> 4</span><span class="tab"></span>app = base.main()
+<span class="line-numbers"> 5</span><span class="tab"></span>app.serve()
+<span class="line-numbers"> 6</span>
+<span class="line-numbers"> 7</span>if <span class="predefined-constant">__name__</span> == <span class="string"><span class="delimiter">"<span class="content">__main__</span><span class="delimiter">"</span></span></span>:
+<span class="line-numbers"> 8</span><span class="tab"></span>main()
+</span></code></pre>
+        <p>We need to make a few adjustments:</p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>base
+<span class="line-numbers"> 3</span><span class="keyword">import </span>socketio
+<span class="line-numbers"> 4</span><span class="keyword">from </span>uweb3.sockets <span class="keyword">import</span> Uweb3SocketIO
+<span class="line-numbers"> 5</span>
+<span class="line-numbers"> 6</span><span class="keyword">def</span> <span class="function">main</span>():
+<span class="line-numbers"> 7</span><span class="tab"></span>sio = socketio.Server()
+<span class="line-numbers"> 8</span><span class="tab"></span><span class="keyword">return</span> sio
+<span class="line-numbers"> 9</span>
+<span class="line-numbers">10</span>if <span class="predefined-constant">__name__</span> == <span class="string"><span class="delimiter">"<span class="content">__main__</span><span class="delimiter">"</span></span></span>:
+<span class="line-numbers">11</span><span class="tab"></span>sio = main()
+<span class="line-numbers">12</span><span class="tab"></span>Uweb3SocketIO(base.main(), sio)
+</span></code></pre>
+        <p>
+          Now when we start our application it will spin up both servers. 
+          Routing the request to the appropriate application is handled by the middleware provided. 
+        </p>
+        </div>
+        <div id="routes">
+          <h2>Adding routes</h2>
+          <p>
+            Adding routes to our websocket can be done like this:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="keyword">import </span>base
+<span class="line-numbers"> 3</span><span class="keyword">import </span>socketio
+<span class="line-numbers"> 4</span><span class="keyword">from </span>uweb3.sockets <span class="keyword">import</span> Uweb3SocketIO
+<span class="line-numbers"> 5</span>
+<span class="line-numbers"> 6</span><span class="keyword">def</span> <span class="function">routes</span>(sio):
+<span class="line-numbers"> 7</span><span class="tab"></span><span class="decorator">@sio.on</span>(<span class="string"><span class="delimiter">"<span class="content">event</span><span class="delimiter">"</span></span></span>)
+<span class="line-numbers"> 8</span><span class="tab"></span><span class="keyword">def</span> <span class="function">my_event_handler</span>(arg1, arg2):
+<span class="line-numbers"> 9</span><span class="tab"></span><span class="tab"></span>print(<span class="string"><span class="delimiter">"<span class="content">Hello World!</span><span class="delimiter">"</span></span></span>)
+<span class="line-numbers">10</span><span class="tab"></span>
+<span class="line-numbers">11</span><span class="keyword">def</span> <span class="function">main</span>():
+<span class="line-numbers">12</span><span class="tab"></span>sio = socketio.Server()
+<span class="line-numbers">13</span><span class="tab"></span>routes(sio)
+<span class="line-numbers">14</span><span class="tab"></span><span class="keyword">return</span> sio
+<span class="line-numbers">15</span>
+<span class="line-numbers">16</span>if <span class="predefined-constant">__name__</span> == <span class="string"><span class="delimiter">"<span class="content">__main__</span><span class="delimiter">"</span></span></span>:
+<span class="line-numbers">17</span><span class="tab"></span>sio = main()
+<span class="line-numbers">18</span><span class="tab"></span>Uweb3SocketIO(base.main(), sio)
+</span></code></pre>
+        <p>To send/recieve events in one of our templates all we need to do is add the following:</p>
+<pre>
+<code class="html syntaxhl"><span class="tag">&lt;script</span> 
+  <span class="predefined-constant">src</span>=<span class="string"><span class="delimiter">"<span class="content">//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js</span><span class="delimiter">"</span></span></span> 
+  <span class="predefined-constant">integrity</span>=<span class="string"><span class="delimiter">"<span class="content">sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=</span><span class="delimiter">"</span></span></span>
+  <span class="predefined-constant">crossorigin</span>=<span class="string"><span class="delimiter">"<span class="content">anonymous</span><span class="delimiter">"</span></span></span><span class="tag">&gt;
+&lt;/script&gt;</span>
+<span class="tag">&lt;script</span> <span class="predefined-constant">type</span>=<span class="string"><span class="delimiter">"<span class="content">text/javascript</span><span class="delimiter">"</span></span></span> <span class="predefined-constant">charset</span>=<span class="string"><span class="delimiter">"<span class="content">utf-8</span><span class="delimiter">"</span></span></span>&gt;   
+<span class="tab"></span><span class="function">let</span> socket = <span class="decorator">io</span>(<span class="string"><span class="delimiter">"<span class="content">127.0.0.1:8000</span><span class="delimiter">"</span></span></span>);
+<span class="tab"></span>socket.<span class="span decorator">on</span>(<span class="string"><span class="delimiter">"<span class="content">connect</span><span class="delimiter">"</span></span></span>, () => {
+<span class="tab"></span><span class="tab"></span>socket.<span class="span decorator">emit</span>(<span class="string"><span class="delimiter">"<span class="content">event</span><span class="delimiter">"</span></span></span>, <span class="string"><span class="delimiter">"<span class="content">data</span><span class="delimiter">"</span></span></span>);
+<span class="tab"></span>});
+<span class="tag">&lt;/script&gt;</span>
+</code></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+  {{inline footer.html}}
+</body>
+</html>

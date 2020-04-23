@@ -59,3 +59,7 @@ class PageMaker(uweb3.DebuggingPageMaker):
   def EventListener(self):
     return self.parser.Parse('documentation/beta/event_listener.html')
   
+  def WebSockets(self):
+    return self.parser.Parse('documentation/beta/websockets.html')
+
+  

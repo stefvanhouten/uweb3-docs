@@ -45,6 +45,7 @@ def main():
       ('/documentation/beta/xsrf_decorator', 'XsrfDecorator'),
       ('/documentation/beta/escaping_module', 'EscapingModule'),
       ('/documentation/beta/event_listener', 'EventListener'),
+      ('/documentation/beta/websockets', 'WebSockets'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
       ]
