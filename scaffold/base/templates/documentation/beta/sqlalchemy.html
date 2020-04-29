@@ -134,7 +134,7 @@
 <span class="line-numbers"> 4</span>
 <span class="line-numbers"> 5</span>Base = declarative_base()
 <span class="line-numbers"> 6</span><span class="comment">#First the AlchemyRecord then the Base, If we change this around it wont work as intended!</span>
-<span class="line-numbers"> 7</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.model.AlchemyRecord, Base):
+<span class="line-numbers"> 7</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.alchemy_model.AlchemyRecord, Base):
 <span class="line-numbers"> 8</span><span class="tab"></span>__tablename__ = <span class="string"><span class="delimiter">"<span class="content">message</span><span class="delimiter">"</span></span></span>
 <span class="line-numbers"> 9</span>
 <span class="line-numbers">10</span><span class="tab"></span>ID = Column(Integer, primary_key=<span class="boolean">True</span>)
@@ -154,7 +154,7 @@
 <span class="line-numbers"> 4</span>
 <span class="line-numbers"> 5</span>Base = declarative_base()
 <span class="line-numbers"> 6</span><span class="comment">#First the AlchemyRecord then the Base, If we change this around it wont work as intended!</span>
-<span class="line-numbers"> 7</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.model.AlchemyRecord, Base):
+<span class="line-numbers"> 7</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.alchemy_model.AlchemyRecord, Base):
 <span class="line-numbers"> 8</span><span class="tab"></span>__tablename__ = <span class="string"><span class="delimiter">"<span class="content">message</span><span class="delimiter">"</span></span></span>
 <span class="line-numbers"> 9</span>
 <span class="line-numbers">10</span><span class="tab"></span>ID = Column(Integer, primary_key=<span class="boolean">True</span>)
@@ -235,7 +235,7 @@
                       can automaticly load related records.
                       However this requires a little bit of tweaking to our
                       exisiting<code>Message</code> class.
-                      For more detailed documentation you can also take a look at <a href="https://docs.sqlalchemy.org/en/13/orm/loading_relationships.html">SQLalchemy's documentation</a>. 
+                      For more detailed documentation you can also take a look at <a href="https://docs.sqlalchemy.org/en/13/orm/loading_relationships.html">SQLalchemy's documentation</a>.
                     </p>
                     <p>
                       Consider the following tables in your database:
@@ -262,7 +262,7 @@
 <span class="line-numbers"> 5</span>
 <span class="line-numbers"> 6</span>Base = declarative_base()
 <span class="line-numbers"> 7</span><span class="comment">#First the AlchemyRecord then the Base, If we change this around it wont work as intended!</span>
-<span class="line-numbers"> 8</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.model.AlchemyRecord, Base):
+<span class="line-numbers"> 8</span><span class="keyword">class </span><span class="function">Message</span>(uweb3.alchemy_model.AlchemyRecord, Base):
 <span class="line-numbers"> 9</span><span class="tab"></span>__tablename__ = <span class="string"><span class="delimiter">"<span class="content">message</span><span class="delimiter">"</span></span></span>
 <span class="line-numbers">10</span>
 <span class="line-numbers">11</span><span class="tab"></span>ID = Column(Integer, primary_key=<span class="boolean">True</span>)
@@ -270,7 +270,7 @@
 <span class="line-numbers">13</span><span class="tab"></span>message = Column(String)
 <span class="line-numbers">14</span><span class="tab"></span>children = relationship(<span class="string"><span class="delimiter">"<span class="content">Author</span><span class="delimiter">"</span></span></span>, lazy=<span class="string"><span class="delimiter">"<span class="content">select</span><span class="delimiter">"</span></span></span>)
 <span class="line-numbers">15</span>
-<span class="line-numbers">16</span><span class="keyword">class </span><span class="function">Author</span>(uweb3.model.AlchemyRecord, Base):
+<span class="line-numbers">16</span><span class="keyword">class </span><span class="function">Author</span>(uweb3.alchemy_model.AlchemyRecord, Base):
 <span class="line-numbers">17</span><span class="tab"></span>__tablename__ = <span class="string"><span class="delimiter">"<span class="content">author</span><span class="delimiter">"</span></span></span>
 <span class="line-numbers">18</span>
 <span class="line-numbers">19</span><span class="tab"></span>ID = Column(Integer, primary_key=<span class="boolean">True</span>)
@@ -299,7 +299,7 @@
                         class="delimiter">"</span></span>: <span class="string"><span
                         class="delimiter">"</span><span class="content">stef@underdark.nl</span><span
                         class="delimiter">"</span></span> })</code>
-                  
+
                 <div id="comparisons">
                   <h2>comparisons</h2>
                   <h3>Equality</h3>
@@ -312,8 +312,8 @@
                   </ol>
                   <h3>Greater / smaller</h3>
                   <p>
-                    Comparing two objects with one another to tell their relative order can only be done if they are of the same type. 
-                    If they are, the comparison is done based on the primary key values of the records. 
+                    Comparing two objects with one another to tell their relative order can only be done if they are of the same type.
+                    If they are, the comparison is done based on the primary key values of the records.
                     In most cases this will result in an ordering similar to the database-insert order.
                   </p>
                 </div>
