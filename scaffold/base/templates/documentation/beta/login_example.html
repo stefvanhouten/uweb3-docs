@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>µWeb3 BETA login example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <div id="beta">
+          <h1>Login example</h1>
+          <p>
+            By default µWeb3 does not come with a login module.
+            We aim to keep the framework as lightweight as possible and give the user all the control.
+          </p>
+          <div id="simple_login">
+            <h2>Simple login</h2>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from </span><span class="include">uweb3.model </span><span class="keyword">import </span><span class="include">SecureCookie, Record</span>
+<span class="line-numbers">0</span>
+<span class="line-numbers">0</span><span class="keyword">class </span><span class="function">UserClass</span>(<span class="predefined-constant">Record</span>):
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span>SALT_BYTES = <span class="integer">8</span>
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="decorator">@classmethod</span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">FromName</span>(<span class="predefined-constant">cls</span>, connection, username):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">with</span> connection as cursor:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>safe_name = connection.EscapeValues(username)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>user = cursor.Select(
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">table</span>=cls.TableName(),
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">conditions</span>=<span class="string"><span class="delimiter">"</span><span class="content">name=<span class="predefined-constant">%s</span></span><span class="delimiter">"</span> % safe_name)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if <span class="keyword">not</span> user:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">raise</span> <span class="predefined-constant">cls</span>.NotExistError(<span class="string"><span class="delimiter">"</span><span class="content">No user with name <span class="predefined-constant">%r</span></span><span class="delimiter">"</span> % username)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">cls</span>(connection, user[0])
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="decorator">@classmethod</span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">HashPassword</span>(<span class="predefined-constant">cls</span>, password, salt=<span class="predefined-constant">None</span>):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if <span class="keyword">not</span> salt:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab">salt = <span class="predefined-constant">cls</span>.SaltBytes()</span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if (<span class="decorator">len</span>(salt) * 3) / 4 - salt.decode(<span class="string"><span class="delimiter">"</span><span class="content">utf-8</span><span class="delimiter">"</span></span>).count(<span class="string"><span class="delimiter">"</span><span class="content">=</span><span class="delimiter">"</span></span>, -<span class="integer">2</span>) != cls.SALT_BYTES:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">raise</span> ValueError(<span class="string"><span class="delimiter">"</span><span class="content">Salt is of incorrect length. Expected <span class="predefined-constant">%d</span>, got: <span class="predefined-constant">%d</span></span><span class="delimiter">"</span></span> % (cls.SALT_BYTES, len(salt)))
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>m = hashlib.sha256()
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>m.update(password.encode(<span class="string"><span class="delimiter">"</span><span class="content">utf-8</span><span class="delimiter">"</span></span>) + binascii.hexlify(salt))
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>password = m.hexdigest()
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>return { <span class="string"><span class="delimiter">"</span><span class="content">password</span><span class="delimiter">"</span></span>: password, <span class="string"><span class="delimiter">"</span><span class="content">salt</span><span class="delimiter">"</span></span>: salt }
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="decorator">@classmethod</span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">SaltBytes</span>(<span class="predefined-constant">cls</span>):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>random_bytes = os.urandom(cls.SALT_BYTES)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> base64.b64encode(random_bytes).decode(<span class="string"><span class="delimiter">"</span><span class="content">utf-8</span><span class="delimiter">"</span></span>).encode(<span class="string"><span class="delimiter">"</span><span class="content">utf-8</span><span class="delimiter">"</span></span>) <span class="comment">#we do this to cast this byte to utf-8</span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">VerifyPlaintext</span>(<span class="predefined-constant">self</span>, password):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>salted = <span class="predefined-constant">self</span>.HashPassword(password, self[<span class="string"><span class="delimiter">"</span><span class="content">salt</span><span class="delimiter">"</span></span>].encode(<span class="string"><span class="delimiter">"</span><span class="content">utf-8</span><span class="delimiter">"</span></span>))[<span class="string"><span class="delimiter">"</span><span class="content">password</span><span class="delimiter">"</span></span>]
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> salted === <span class="predefined-constant">self</span>[<span class="string"><span class="delimiter">"</span><span class="content">password</span><span class="delimiter">"</span></span>]
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="keyword">class </span><span class="function">LoginMixin</span>(<span class="predefined-constant">SecureCookie</span>):
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">class</span> </span><span class="function">NoSessionError</span>(Exception):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>"""Custom exception for user not having a (unexpired) session cookie."""
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span>USER = UserClass
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">ValidateLogin</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">try</span>:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>user = <span class="predefined-constant">self</span>.USER.FromName(<span class="predefined-constant">self</span>.connection, <span class="predefined-constant">self</span>.post.getfirst(<span class="string"><span class="delimiter">"</span><span class="content">username</span><span class="delimiter">"</span></span>))
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>if user.VerifyPlaintext(<span class="keyword">str</span>(<span class="predefined-constant">self</span>.post.getfirst(<span class="string"><span class="delimiter">"</span><span class="content">password</span><span class="delimiter">"</span></span>, ''))):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>._Login_Success(user)
+<span class="line-numbers">0</span><span class="tab"></span></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>.Login_Failure()
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">except</span> uweb3.model.NotExistError:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>.Login_Failure()
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="comment">#We define these in our actual PageMaker, or we could do it here depending on user preference.</span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">_Login_Success</span>(<span class="predefined-constant">self</span>, user):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">raise</span> NotImplementedError
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">_Login_Failure</span>(<span class="predefined-constant">self</span>, user):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">raise</span> NotImplementedError
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="keyword">class</span> LoginPageMaker(uweb3.PageMaker, LoginMixin):
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">__init__</span>(<span class="predefined-constant">self</span>, *args, **kwargs):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">super</span>(PageMaker, <span class="predefined-constant">self</span>).<span class="decorator">__init__</span>(*args, **kwds)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>LoginMixin.<span class="decorator">__init__</span>(<span class="predefined-constant">self</span>)
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">_Login_Failure</span>(<span class="predefined-constant">self</span>, user):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">raise</span> NotImplementedError
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">_Login_Success</span>(<span class="predefined-constant">self</span>, user):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>secure_user = { key : value for key, value in user.items() if key <span class="keyword">not</span> in (<span class="string"><span class="delimiter">"</span><span class="content">password</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">salt</span><span class="delimiter">"</span></span>)}
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="comment">#Create a secure cookie (We inherit the SecureCookie in our LoginMixin)</span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">self</span>.Create(<span class="string"><span class="delimiter">"</span><span class="content">login</span><span class="delimiter">"</span></span>, secure_user, max_age=<span class="string"><span class="delimiter">"</span><span class="content">172800</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">self</span>.req.Redirect(<span class="string"><span class="delimiter">"</span><span class="content">/Your landing page for logged in users</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">_GetUserLoggedIn</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">self</span>.user = <span class="predefined-constant">self</span>.cookiejar.get(<span class="string"><span class="delimiter">"</span><span class="content">login</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if <span class="predefined-constant">self</span>.user:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>.user
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">raise</span> <span class="predefined-constant">self</span>.NoSessionError(<span class="string"><span class="delimiter">"</span><span class="content">security error for session</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">LandingPage</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">try</span>:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">self</span>._GetUserLoggedIn()
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="keyword">except</span>(uweb3.model.NotExistError, <span class="predefined-constant">self</span>.NoSessionError):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>.req.Redirect(<span class="string"><span class="delimiter">"</span><span class="content">/login</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="comment">#Do stuff</span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="keyword">def </span><span class="function">AddUser</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>email = self.post.getfirst(<span class="string"><span class="delimiter">"</span><span class="content">email</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if <span class="keyword">not</span> email:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>.req.Redirect(<span class="string"><span class="delimiter">"</span><span class="content">/signup</span><span class="delimiter">"</span></span>, httpcode=<span class="integer">303</span>)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if <span class="decorator">len</span>(email) > <span class="integer">200</span>:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>message = <span class="string"><span class="delimiter">"</span><span class="content">The email is too long.</span><span class="delimiter">"</span></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>.RequestMessage(message, <span class="string"><span class="delimiter">"</span><span class="content">Error</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">/signup</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>user = model.User.FromEmail(self.connection, email)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if <span class="decorator">len</span>(<span class="predefined-constant">self</span>.post.getfirst(<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span>)) > <span class="integer">30</span>:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>message = <span class="string"><span class="delimiter">"</span><span class="content">The username is too long.</span><span class="delimiter">"</span></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>.RequestMessage(message, <span class="string"><span class="delimiter">"</span><span class="content">Error</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">/signup</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if model.User.FromAuthor(<span class="predefined-constant">self</span>.connection, <span class="predefined-constant">self</span>.post.getfirst(<span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span>)):
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>message = <span class="string"><span class="delimiter">"</span><span class="content">The username is already in use.</span><span class="delimiter">"</span></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="keyword">return</span> <span class="predefined-constant">self</span>.RequestMessage(message, <span class="string"><span class="delimiter">"</span><span class="content">Error</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">/signup</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>if <span class="keyword">not</span> user:
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>hashed = model.User.HashPassword(<span class="predefined-constant">self</span>.post.getfirst(<span class="string"><span class="delimiter">"</span><span class="content">password</span><span class="delimiter">"</span></span>))
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>user = model.User.Create(<span class="predefined-constant">self</span>.connection, {
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="string"><span class="delimiter">"</span><span class="content">name</span><span class="delimiter">"</span></span>: self.post.getfirst(<span class="string"><span class="delimiter">"</span><span class="content">email</span><span class="delimiter">"</span></span>),
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span>'password': hashed['password'],
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span>'salt': hashed['salt'].decode('utf-8'),
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span>'author': self.post.getfirst('name'),
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span>'active': 'true',
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span>'admin': 'false'})
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+<span class="line-numbers">0</span><span class="tab"></span><span class="tab"></span>
+
+</span></code></pre>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  {{inline footer.html}}
+</body>
+</html>

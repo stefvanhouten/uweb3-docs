@@ -46,6 +46,7 @@ def main():
       ('/documentation/beta/escaping_module', 'EscapingModule'),
       ('/documentation/beta/event_listener', 'EventListener'),
       ('/documentation/beta/websockets', 'WebSockets'),
+      ('/documentation/beta/login_example', 'LoginExample'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
       ]
