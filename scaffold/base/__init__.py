@@ -47,6 +47,7 @@ def main():
       ('/documentation/beta/event_listener', 'EventListener'),
       ('/documentation/beta/websockets', 'WebSockets'),
       ('/documentation/beta/login_example', 'LoginExample'),
+      ('/documentation/beta/pagemaker', 'BetaPageMaker'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
       ]

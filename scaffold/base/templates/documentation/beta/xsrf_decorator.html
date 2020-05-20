@@ -37,18 +37,18 @@
           <p>
             To help preventing XSRF µWeb3 has a decorator that handles validation for you.
             All you need to do is decorate the route that you want to protect and you are good to go.
-            The decorator handles creating/verifying/updating/deleting and error raising. 
+            The decorator handles creating/verifying/updating/deleting and error raising.
           </p>
 <pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb3.pagemaker.new_decorators <span class="keyword">import</span> checkxsrf
 <span class="line-numbers">2</span>
 <span class="line-numbers">3</span><span class="decorator">@checkxsrf</span>
 <span class="line-numbers">4</span><span class="keyword">class </span><span class="function">Router</span>(uweb3.PageMaker):
 <span class="line-numbers">5</span><span class="tab"></span><span class="keyword">def </span><span class="function">RouteHandler</span>(<span class="predefined-constant">self</span>):
-<span class="line-numbers">6</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>, xsrf=<span class="predefined-constant">self</span>.xsrf)
+<span class="line-numbers">6</span><span class="tab"></span><span class="tab"></span><span class="keyword">return </span><span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">route.html</span><span class="delimiter">"</span>, xsrf=<span class="predefined-constant">self</span>.cookies.get(<span class="string"><span class="delimiter">"</span><span class="content">xsrf</span><span class="delimiter">"</span>))
 </span></code></pre>
           <p>
-            The decorator also adds an attribute called <code>xsrf</code> to the route. 
-            This is what we want to pass through to the HTML so that we can send it with our request. 
+            The decorator also adds an attribute called <code>xsrf</code> to the route.
+            This is what we want to pass through to the HTML so that we can send it with our request.
           </p>
           <p>And this is how our HTML should look like:</p>
 <pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -68,6 +68,16 @@
         <p>
           When the XSRF code is invalid or missing from a protected route an error will be raised and displayed on the webpage.
         </p>
+        </div>
+        <div id="invalid">
+          <h2>Invalid XSRF field</h2>
+          <p>
+            When an invalid or missing XSRF field is provided by the client
+            the decorator will empty the post data that is stored in the PageMaker.
+          </p>
+          <p>
+            Instead of removing the data completely it will be moved to the <code>invalid_form_data</code> attribute available in the PageMaker.
+          </p>
         </div>
       </section>
     </div>

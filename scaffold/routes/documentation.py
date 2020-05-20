@@ -65,4 +65,5 @@ class PageMaker(uweb3.DebuggingPageMaker):
   def LoginExample(self):
     return self.parser.Parse('documentation/beta/login_example.html')
 
-
+  def BetaPageMaker(self):
+    return self.parser.Parse('documentation/beta/pagemaker.html')

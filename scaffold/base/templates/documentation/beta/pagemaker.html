@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>µWeb3 BETA PageMaker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+</head>
+
+<body id="header" class="layout">
+  <header>
+    <div>
+      <div class="logo">
+        <a href="/">µWeb3 framework</a>
+        <p>A lightweight, high performance python web framework.</p>
+      </div>
+      {{inline nav.html}}
+      <button class="toggle">Toggle</button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>Documentation</h2>
+        <nav>
+          {{inline documentation/side-nav.html}}
+      </section>
+    </aside>
+    <div>
+      <section>
+        <div id="beta">
+          <h1>PageMaker</h1>
+        </div>
+        <div id="flash">
+          <h2>Flashing messages</h2>
+          <p>
+            Just like Flask we provide a Flashing method that makes messages available in the template.
+            Flash is available in every uWeb3 PageMaker class and should be used like this:
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb <span class="keyword">import</span> PageMaker
+<span class="line-numbers">2</span>
+<span class="line-numbers">3</span><span class="keyword">class </span><span class="function">Pages</span>(<span class="predefined-constant">PageMaker</span>):
+<span class="line-numbers">4</span><span class="tab"></span><span class="keyword">def </span><span class="function">Route</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">5</span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">self</span>.Flash(<span class="string"><span class="delimiter">"</span><span class="content">Hello World!</span><span class="delimiter">"</span></span>)
+<span class="line-numbers">6</span><span class="tab"></span><span class="tab"></span><self class="keyword">return</self> <span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">index.html</span><span class="delimiter">"</span>)</span>
+</span></code></pre>
+
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb flash<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>   &#123;&#123; for message in [messages] &#125;&#125;
+<span class="line-numbers"> 8</span>      <span class="tag">&lt;p&gt;</span>[message]<span class="tag">&lt;p&gt;</span>
+<span class="line-numbers"> 9</span>   &#123;&#123; endfor &#125;&#125;
+<span class="line-numbers">10</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers">11</span><span class="tag">&lt;/html&gt;</span>
+</span></code></pre>
+        </div>
+        <div id="extend_template">
+          <h2>ExtendTemplate</h2>
+          <p>
+            If you want to extend a template with, for example the footer, you can use the <code>ExtendTemplate</code> method available in the PageMaker.
+          </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb <span class="keyword">import</span> PageMaker
+<span class="line-numbers">2</span>
+<span class="line-numbers">3</span><span class="keyword">class </span><span class="function">Pages</span>(<span class="predefined-constant">PageMaker</span>):
+<span class="line-numbers">4</span><span class="tab"></span><span class="keyword">def </span><span class="function">Route</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">5</span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">self</span>.ExtendTemplate(<span class="string"><span class="delimiter">"</span><span class="content">Footer</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">footer.html</span><span class="delimiter">"</span></span>, **kwds)
+<span class="line-numbers">6</span><span class="tab"></span><span class="tab"></span><self class="keyword">return</self> <span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">index.html</span><span class="delimiter">"</span>)</span>
+</span></code></pre>
+
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb ExtendTemplate<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"> 8</span><span class="tag">&lt;/html&gt;</span>
+<span class="line-numbers"> 9</span>&#91;footer&#93;</span></code></pre>
+      <p>
+        Because adding the footer and header manually to every route is tedious we can fix this by creating a <code>_PreRequest</code> method in our PageMaker.
+      </p>
+<pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb <span class="keyword">import</span> PageMaker
+<span class="line-numbers">2</span>
+<span class="line-numbers">3</span><span class="keyword">class </span><span class="function">Pages</span>(<span class="predefined-constant">PageMaker</span>):
+<span class="line-numbers">4</span><span class="tab"></span><span class="keyword">def </span><span class="function">_PreRequest</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">5</span><span class="tab"></span><span class="tab"></span><span class="predefined-constant">self</span>.ExtendTemplate(<span class="string"><span class="delimiter">"</span><span class="content">Footer</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">footer.html</span><span class="delimiter">"</span></span>, **kwds)
+<span class="line-numbers">6</span>
+<span class="line-numbers">7</span><span class="tab"></span><span class="keyword">def </span><span class="function">Route</span>(<span class="predefined-constant">self</span>):
+<span class="line-numbers">8</span><span class="tab"></span><span class="tab"></span><self class="keyword">return</self> <span class="predefined-constant">self</span>.parser.Parse(<span class="string"><span class="delimiter">"</span><span class="content">index.html</span><span class="delimiter">"</span>)</span>
+</span></code></pre>
+      <p>And this HTML will still work: </p>
+<pre><code class="html syntaxhl"><span class="CodeRay"><span class="line-numbers"> 1</span><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="line-numbers"> 2</span><span class="tag">&lt;html&gt;</span>
+<span class="line-numbers"> 3</span>  <span class="tag">&lt;head&gt;</span>
+<span class="line-numbers"> 4</span>    <span class="tag">&lt;title&gt;</span>µWeb ExtendTemplate<span class="tag">&lt;/title&gt;</span>
+<span class="line-numbers"> 5</span>  <span class="tag">&lt;/head&gt;</span>
+<span class="line-numbers"> 6</span>  <span class="tag">&lt;body&gt;</span>
+<span class="line-numbers"> 7</span>  <span class="tag">&lt;/body&gt;</span>
+<span class="line-numbers"> 8</span><span class="tag">&lt;/html&gt;</span>
+<span class="line-numbers"> 9</span>&#91;footer&#93;</span></code></pre>
+      </section>
+    </div>
+  </main>
+  {{inline footer.html}}
+</body>
+</html>
