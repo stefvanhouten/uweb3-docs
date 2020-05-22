@@ -66,6 +66,8 @@
           <h2>ExtendTemplate</h2>
           <p>
             If you want to extend a template with, for example the footer, you can use the <code>ExtendTemplate</code> method available in the PageMaker.
+            Be aware that you should use the <code>ExtendTemplate</code> method before flashing messages,
+            otherwise the flashed messages will be available in the extended template as well.
           </p>
 <pre><code class="python syntaxhl"><span class="CodeRay"><span class="line-numbers">1</span><span class="keyword">from</span> uweb <span class="keyword">import</span> PageMaker
 <span class="line-numbers">2</span>
