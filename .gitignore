@@ -1,3 +1,5 @@
 /uweb3-venv/
+/env/
+*.log
 *.out
 *.pyc

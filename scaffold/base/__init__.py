@@ -9,19 +9,17 @@ import uweb3
 # Application
 from . import pages
 
+
 def main():
   """Creates a uWeb3 application.
-
   The application is created from the following components:
-
   - The presenter class (PageMaker) which implements the request handlers.
   - The routes iterable, where each 2-tuple defines a url-pattern and the
     name of a presenter method which should handle it.
-  - The configuration file (ini format) from which settings should be read.
+  - The execution path, internally used to find templates etc.
   """
-  config_file = os.path.join(os.path.dirname(__file__), 'config.ini')
-  config = uweb3.read_config(config_file)
-  routes = [
+  return uweb3.uWeb(pages.PageMaker,
+      [
       ('/', 'Uweb'),
       ('/about', 'About'),
       ('/contact', 'Contact'),
@@ -50,5 +48,6 @@ def main():
       ('/documentation/beta/pagemaker', 'BetaPageMaker'),
       ('/static/(.*)', 'Static'),
       ('/(.*)', 'FourOhFour'),
-      ]
-  return uweb3.uWeb(pages.PageMaker, routes, config=config)
+      ],
+      os.path.dirname(__file__)
+  )
